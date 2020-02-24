@@ -4,20 +4,15 @@
 
 [Here](files/interesting_examples.html) is my 5 interesting R examples
 
-1. S&P 500 Stock Index
-https://blogs.oracle.com/datascience/performing-a-time-series-analysis-on-the-sandp-500-stock-index
+1. [S&P 500 Stock Index](https://blogs.oracle.com/datascience/performing-a-time-series-analysis-on-the-sandp-500-stock-index)
 
-2. Australia Beer Production
-https://www.rpubs.com/edwardtsai/timeseriesanalysis
+2. [Australia Beer Production](https://www.rpubs.com/edwardtsai/timeseriesanalysis)
 
-3. US Monthly Natural Gas Consumption
-https://rpubs.com/ramkrisp/TSstudioDemo
+3. [US Monthly Natural Gas Consumption](https://rpubs.com/ramkrisp/TSstudioDemo)
 
-4. Population forecast for Manipur, India 2021
-https://rpubs.com/Loy/ts-populationforecast
+4. [Population forecast for Manipur, India 2021](https://rpubs.com/Loy/ts-populationforecast)
 
-5. Epidemiological Data (Flu) for Costa Rica
-https://rpubs.com/ashvenkat/flu_timeseries
+5. [Epidemiological Data (Flu) for Costa Rica](https://rpubs.com/ashvenkat/flu_timeseries)
 
 
 ## Welcome to GitHub Pages
