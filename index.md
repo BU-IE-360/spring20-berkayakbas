@@ -4,6 +4,22 @@
 
 [Here](files/interesting_examples.html) is my 5 interesting R examples
 
+1. S&P 500 Stock Index
+https://blogs.oracle.com/datascience/performing-a-time-series-analysis-on-the-sandp-500-stock-index
+
+2. Australia Beer Production
+https://www.rpubs.com/edwardtsai/timeseriesanalysis
+
+3. US Monthly Natural Gas Consumption
+https://rpubs.com/ramkrisp/TSstudioDemo
+
+4. Population forecast for Manipur, India 2021
+https://rpubs.com/Loy/ts-populationforecast
+
+5. Epidemiological Data (Flu) for Costa Rica
+https://rpubs.com/ashvenkat/flu_timeseries
+
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/BU-IE-360/spring20-berkayakbas/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
