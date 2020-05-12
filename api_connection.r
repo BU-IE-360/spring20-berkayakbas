@@ -109,6 +109,7 @@ check_format <- function(predictions){
 token = get_token(username=username, password=password, url=subm_url)
 data = get_data(token=token,url=subm_url)
 
-# predictions=unique(data[,list(product_content_id)])
-# predictions[,forecast:=2.3]
+predictions=unique(data[,list(product_content_id)])
+predictions[,forecast:=0]
+
 # send_submission(predictions, token, url=subm_url, submit_now=F)
