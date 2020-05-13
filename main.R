@@ -41,3 +41,20 @@ make_xts_withsales <-function(product1) {
 #   3.4 Exponential Smoothing @BERKAY
 #   3.5 Arima @BBG
 #   3.6 Mean @BBG
+
+
+returnBBGforecasts<- function (product){
+  BBGforecasts<-vector("numeric", 4)
+  
+  BBGforecasts[1]<-as.numeric(naive(product$sold_count, h=1)$mean)
+  BBGforecasts[2]<-as.numeric(meanf(product$sold_count, h=1)$mean)
+  BBGforecasts[3]<-as.numeric(forecast(HoltWinters(ts(product$sold_count ,frequency = 7)[,],seasonal = "additive" ),h=1)$mean)
+  if(sum(ts(product3$sold_count ,frequency = 7)[,1]==0)==0){
+    BBGforecasts[4]<-as.numeric(forecast(HoltWinters(ts(product$sold_count ,frequency = 7)[,],seasonal = "multiplicative" ),h=1)$mean)
+  } else {
+    BBGforecasts[4]<-NA
+  }
+  productfs<-as.data.frame(BBGforecasts)
+  row.names(productfs)<-c("Naive", "Mean","HWAdditive","HWMultiplicative")
+  return(productfs)
+}
