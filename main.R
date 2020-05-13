@@ -45,7 +45,8 @@ get_product_forecasts <- function (product) {
     "HW_Multiplicative",
     'Linear Regression',
     'Exponential Smoothing',
-    'Auto Arima'
+    'Auto Arima',
+    'TBATS'
   )
   forecasts <- vector("numeric", length(method_names))
   
@@ -88,8 +89,10 @@ get_product_forecasts <- function (product) {
   forecasts[6] <- as.numeric(ses(product$sold_count, h = 1)$mean)
   
   # Auto Arima
-  forecasts[7] <-
-    as.numeric(forecast(auto.arima(product$sold_count), h = 1)$mean)
+  forecasts[7] <-as.numeric(forecast(auto.arima(product$sold_count), h = 1)$mean)
+  
+  # TBATS
+  forecasts[8] <-as.numeric(forecast(tbats(ts(product$sold_count)), h = 1)$mean)
   
   forecasts <- as.data.frame(forecasts)
   row.names(forecasts) <- method_names
