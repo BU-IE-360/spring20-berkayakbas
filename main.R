@@ -51,23 +51,23 @@ get_product_forecasts <- function (product) {
   forecasts <- vector("numeric", length(method_names))
   
   # 1. Naive
-  forecasts[1] <- as.numeric(naive(product$sold_count, h = 1)$mean)
+  forecasts[1] <- as.numeric(naive(product$sold_count, h = 2)$mean[2])
   
   # 2. Mean Forecast
-  forecasts[2] <- as.numeric(meanf(product$sold_count, h = 1)$mean)
+  forecasts[2] <- as.numeric(meanf(product$sold_count, h = 2)$mean[2])
   
   # 3. Holt Winters Additive
   forecasts[3] <-
     as.numeric(forecast(HoltWinters(
       ts(product$sold_count , frequency = 7)[, ], seasonal = "additive"
-    ), h = 1)$mean)
+    ), h = 2)$mean[2])
   
   # 4. Holt Winters Multiplicative
   if (sum(ts(product$sold_count , frequency = 7)[, 1] == 0) == 0) {
     forecasts[4] <-
       as.numeric(forecast(HoltWinters(
         ts(product$sold_count , frequency = 7)[, ], seasonal = "multiplicative"
-      ), h = 1)$mean)
+      ), h = 2)$mean[2])
   }
   else {
     forecasts[4] <- NA
@@ -86,13 +86,13 @@ get_product_forecasts <- function (product) {
   forecasts[5] <- NA
   
   # Exponential Smoothing
-  forecasts[6] <- as.numeric(ses(product$sold_count, h = 1)$mean)
+  forecasts[6] <- as.numeric(ses(product$sold_count, h = 2)$mean[2])
   
   # Auto Arima
-  forecasts[7] <-as.numeric(forecast(auto.arima(product$sold_count), h = 1)$mean)
+  forecasts[7] <-as.numeric(forecast(auto.arima(product$sold_count), h = 2)$mean[2])
   
   # TBATS
-  forecasts[8] <-as.numeric(forecast(tbats(ts(product$sold_count)), h = 1)$mean)
+  forecasts[8] <-as.numeric(forecast(tbats(ts(product$sold_count)), h = 2)$mean[2])
   
   forecasts <- as.data.frame(forecasts)
   row.names(forecasts) <- method_names
