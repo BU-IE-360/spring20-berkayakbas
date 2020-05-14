@@ -108,8 +108,8 @@ get_product_forecasts <- function (product) {
     forecast[4] <- NA
   }
   
-  # 6. Exponential Smoothing
-  index = 6
+  # 5. Exponential Smoothing
+  index = 5
   model = ses(product$sold_count, h = 2)
   forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
   accuracy = accuracy(model)
@@ -120,8 +120,8 @@ get_product_forecasts <- function (product) {
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
-  # 7. Auto Arima
-  index = 7
+  # 6. Auto Arima
+  index = 6
   model = auto.arima(product$sold_count)
   forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
   accuracy = accuracy(model)
@@ -132,8 +132,8 @@ get_product_forecasts <- function (product) {
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
-  # 8. TBATS
-  index = 8
+  # 7. TBATS
+  index = 7
   model = tbats(ts(product$sold_count))
   forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
   accuracy = accuracy(model)
@@ -151,7 +151,7 @@ get_product_forecasts <- function (product) {
   forward_lr = step(null, scope=list(lower=null, upper=full), direction="forward", trace = 0)
   
   # 8. Linear Regression
-  index= 5
+  index= 8
   lm_model_1<-lm(sold_count~ visit_count+favored_count+basket_count, data=product)
   newdata_f<-product[(nrow(product)-1):nrow(product), c("visit_count","favored_count", "basket_count")]
   index(newdata_f)<-(index(newdata_f)+2)
