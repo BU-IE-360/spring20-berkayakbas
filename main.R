@@ -38,6 +38,7 @@ make_xts <- function(product1) {
 
 
 get_product_forecasts <- function (product) {
+  # 0. Initialization of vectors
   method_names = c(
     "Naive",
     "Mean",
@@ -48,29 +49,56 @@ get_product_forecasts <- function (product) {
     'Auto Arima',
     'TBATS'
   )
-  forecasts <- vector("numeric", length(method_names))
+  
+  forecast <- vector("numeric", length(method_names))
+  accuracy_ME <- vector("numeric", length(method_names))
+  accuracy_RMSE <- vector("numeric", length(method_names))
+  accuracy_MAE <- vector("numeric", length(method_names))
+  accuracy_MAPE <- vector("numeric", length(method_names))
+  accuracy_MASE <- vector("numeric", length(method_names))
+  accuracy_ACF1 <- vector("numeric", length(method_names))
   
   # 1. Naive
-  forecasts[1] <- as.numeric(naive(product$sold_count, h = 2)$mean[2])
+  index = 1
+  print(index)
+  model = naive(product$sold_count, h = 2)
+  forecast[index] <- as.numeric(model$mean[2])
+  accuracy = accuracy(model)
+  accuracy_ME[index] <- accuracy[, 'ME']
+  accuracy_RMSE[index] <- accuracy[, 'RMSE']
+  accuracy_MAE[index] <- accuracy[, 'MAE']
+  accuracy_MAPE[index] <- accuracy[, 'MAPE']
+  accuracy_MASE[index] <- accuracy[, 'MASE']
+  accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
   # 2. Mean Forecast
-  forecasts[2] <- as.numeric(meanf(product$sold_count, h = 2)$mean[2])
+  index = 2
+  print(index)
+  model = meanf(product$sold_count, h = 2)
+  forecast[index] <- as.numeric(model$mean[2])
+  accuracy = accuracy(model)
+  accuracy_ME[index] <- accuracy[, 'ME']
+  accuracy_RMSE[index] <- accuracy[, 'RMSE']
+  accuracy_MAE[index] <- accuracy[, 'MAE']
+  accuracy_MAPE[index] <- accuracy[, 'MAPE']
+  accuracy_MASE[index] <- accuracy[, 'MASE']
+  accuracy_ACF1[index] <- NA
   
   # 3. Holt Winters Additive
-  forecasts[3] <-
+  forecast[3] <-
     as.numeric(forecast(HoltWinters(
       ts(product$sold_count , frequency = 7)[, ], seasonal = "additive"
     ), h = 2)$mean[2])
   
   # 4. Holt Winters Multiplicative
   if (sum(ts(product$sold_count , frequency = 7)[, 1] == 0) == 0) {
-    forecasts[4] <-
+    forecast[4] <-
       as.numeric(forecast(HoltWinters(
         ts(product$sold_count , frequency = 7)[, ], seasonal = "multiplicative"
       ), h = 2)$mean[2])
   }
   else {
-    forecasts[4] <- NA
+    forecast[4] <- NA
   }
   
   # Stepwise Regression - Forward
@@ -83,24 +111,55 @@ get_product_forecasts <- function (product) {
   
   # Linear Regression
   # lr_model=lm(sold_count ~ ,filtered_product)
-  forecasts[5] <- NA
+  forecast[5] <- NA
   
-  # Exponential Smoothing
-  forecasts[6] <- as.numeric(ses(product$sold_count, h = 2)$mean[2])
+  # 6. Exponential Smoothing
+  index = 6
+  print(index)
+  model = ses(product$sold_count, h = 2)
+  forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
+  accuracy = accuracy(model)
+  accuracy_ME[index] <- accuracy[, 'ME']
+  accuracy_RMSE[index] <- accuracy[, 'RMSE']
+  accuracy_MAE[index] <- accuracy[, 'MAE']
+  accuracy_MAPE[index] <- accuracy[, 'MAPE']
+  accuracy_MASE[index] <- accuracy[, 'MASE']
+  accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
-  # Auto Arima
-  forecasts[7] <-as.numeric(forecast(auto.arima(product$sold_count), h = 2)$mean[2])
+  # 7. Auto Arima
+  index = 7
+  print(index)
+  model = auto.arima(product$sold_count)
+  forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
+  accuracy = accuracy(model)
+  accuracy_ME[index] <- accuracy[, 'ME']
+  accuracy_RMSE[index] <- accuracy[, 'RMSE']
+  accuracy_MAE[index] <- accuracy[, 'MAE']
+  accuracy_MAPE[index] <- accuracy[, 'MAPE']
+  accuracy_MASE[index] <- accuracy[, 'MASE']
+  accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
-  # TBATS
-  forecasts[8] <-as.numeric(forecast(tbats(ts(product$sold_count)), h = 2)$mean[2])
+  # 8. TBATS
+  index = 8
+  print(index)
+  model = tbats(ts(product$sold_count))
+  forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
+  accuracy = accuracy(model)
+  accuracy_ME[index] <- accuracy[, 'ME']
+  accuracy_RMSE[index] <- accuracy[, 'RMSE']
+  accuracy_MAE[index] <- accuracy[, 'MAE']
+  accuracy_MAPE[index] <- accuracy[, 'MAPE']
+  accuracy_MASE[index] <- accuracy[, 'MASE']
+  accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
-  forecasts <- as.data.frame(forecasts)
-  row.names(forecasts) <- method_names
-  return(forecasts)
+  columns = cbind(forecast, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, accuracy_ACF1)
+  results <- as.data.frame(columns)
+  row.names(results) <- method_names
+  return(results)
 }
 
 product_ids = unique(data$product_content_id)
-product_id = product_ids[2]
+product_id = product_ids[1]
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
 get_product_forecasts(product_data)
