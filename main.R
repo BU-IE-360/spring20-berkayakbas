@@ -129,7 +129,7 @@ get_product_forecasts <- function (product) {
   
   
   forecast[index] <- preds[2]
-  accuracy_R2[index]<-summary(lm_model_1)$r.squared
+  accuracy_R2[index]<-summary(lm_model_1)$adj.r.squared
   
   # 6. Exponential Smoothing
   index = 6
