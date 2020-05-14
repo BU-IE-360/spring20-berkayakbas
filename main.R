@@ -40,28 +40,29 @@ make_xts <- function(product1) {
 get_product_forecasts <- function (product) {
   # 0. Initialization of vectors
   method_names = c(
-    "Naive",
-    "Mean",
-    "HW_Additive",
-    "HW_Multiplicative",
-    'Linear Regression',
+    'Naive',
+    'Mean',
+    'HW_Additive',
+    'HW_Multiplicative',
     'Exponential Smoothing',
     'Auto Arima',
-    'TBATS'
+    'TBATS',
+    'Linear Regression',
+    'Stepwise Backward',
+    'Stepwise Forward'
   )
   
-  forecast <- vector("numeric", length(method_names))
-  accuracy_R2<-vector("numeric", length(method_names))
-  accuracy_ME <- vector("numeric", length(method_names))
-  accuracy_RMSE <- vector("numeric", length(method_names))
-  accuracy_MAE <- vector("numeric", length(method_names))
-  accuracy_MAPE <- vector("numeric", length(method_names))
-  accuracy_MASE <- vector("numeric", length(method_names))
-  accuracy_ACF1 <- vector("numeric", length(method_names))
+  forecast <- rep(NA, length(method_names))
+  accuracy_ADJ_R2<- rep(NA, length(method_names))
+  accuracy_ME <- rep(NA, length(method_names))
+  accuracy_RMSE <- rep(NA, length(method_names))
+  accuracy_MAE <- rep(NA, length(method_names))
+  accuracy_MAPE <- rep(NA, length(method_names))
+  accuracy_MASE <- rep(NA, length(method_names))
+  accuracy_ACF1 <- rep(NA, length(method_names))
   
   # 1. Naive
   index = 1
-  print(index)
   model = naive(product$sold_count, h = 2)
   forecast[index] <- as.numeric(model$mean[2])
   accuracy = accuracy(model)
@@ -74,7 +75,6 @@ get_product_forecasts <- function (product) {
   
   # 2. Mean Forecast
   index = 2
-  print(index)
   model = meanf(product$sold_count, h = 2)
   forecast[index] <- as.numeric(model$mean[2])
   accuracy = accuracy(model)
@@ -87,7 +87,6 @@ get_product_forecasts <- function (product) {
   
   # 3. Holt Winters Additive
   index = 3
-  print(index)
   model = HoltWinters(ts(product$sold_count , frequency = 7)[, ], seasonal = "additive")
   forecast[index] <-as.numeric(forecast(model, h = 2)$mean[2])
   accuracy = accuracy(forecast(model, h=2))
@@ -109,31 +108,8 @@ get_product_forecasts <- function (product) {
     forecast[4] <- NA
   }
   
-  # Stepwise Regression - Forward
-  # null=lm(sold_count ~ 1, data=product)
-  # forward_lr = step(null, scope=list(lower=null, upper=full), direction="forward")
-  #
-  # Stepwise Regression - Backward
-  # full=lm(sold_count ~ ., data=product)
-  # backward_lr = step(full, scope=list(lower=null, upper=full), direction="backward")
-  
-  # Linear Regression
-  # lr_model=lm(sold_count ~ ,filtered_product)
-  index= 5
-  lm_model_1<-lm(sold_count~ visit_count+favored_count+basket_count
-                 , data=product)
-  newdata_f<-product[(nrow(product)-1):nrow(product), c("visit_count","favored_count",
-                                                                       "basket_count")]
-  index(newdata_f)<-(index(newdata_f)+2)
-  preds<-predict(lm_model_1, newdata = newdata_f)
-  
-  
-  forecast[index] <- preds[2]
-  accuracy_R2[index]<-summary(lm_model_1)$adj.r.squared
-  
   # 6. Exponential Smoothing
   index = 6
-  print(index)
   model = ses(product$sold_count, h = 2)
   forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
   accuracy = accuracy(model)
@@ -146,7 +122,6 @@ get_product_forecasts <- function (product) {
   
   # 7. Auto Arima
   index = 7
-  print(index)
   model = auto.arima(product$sold_count)
   forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
   accuracy = accuracy(model)
@@ -159,7 +134,6 @@ get_product_forecasts <- function (product) {
   
   # 8. TBATS
   index = 8
-  print(index)
   model = tbats(ts(product$sold_count))
   forecast[index] <- as.numeric(forecast(model, h = 2)$mean[2])
   accuracy = accuracy(model)
@@ -170,7 +144,38 @@ get_product_forecasts <- function (product) {
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
-  columns = cbind(forecast, accuracy_R2, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, accuracy_ACF1)
+  # Stepwise Regression
+  null=lm(sold_count ~ 1, data=product)
+  full=lm(sold_count ~ ., data=product)
+  backward_lr = step(full, scope=list(lower=null, upper=full), direction="backward", trace = 0)
+  forward_lr = step(null, scope=list(lower=null, upper=full), direction="forward", trace = 0)
+  
+  # 8. Linear Regression
+  index= 5
+  lm_model_1<-lm(sold_count~ visit_count+favored_count+basket_count, data=product)
+  newdata_f<-product[(nrow(product)-1):nrow(product), c("visit_count","favored_count", "basket_count")]
+  index(newdata_f)<-(index(newdata_f)+2)
+  preds<-predict(lm_model_1, newdata = newdata_f)
+  forecast[index] <- preds[2]
+  accuracy_ADJ_R2[index]<-summary(lm_model_1)$adj.r.squared
+  
+  # 9. Stepwise Regression - Backward
+  index = 9
+  newdata_f<-product[(nrow(product)-1):nrow(product),]
+  index(newdata_f)<-(index(newdata_f)+2)
+  preds<-predict(backward_lr, newdata = newdata_f)
+  forecast[index] <- preds[2]
+  accuracy_ADJ_R2[index]<-summary(backward_lr)$adj.r.squared
+  
+  # 10. Stepwise Regression - Forward
+  index = 10
+  newdata_f<-product[(nrow(product)-1):nrow(product),]
+  index(newdata_f)<-(index(newdata_f)+2)
+  preds<-predict(forward_lr, newdata = newdata_f)
+  forecast[index] <- preds[2]
+  accuracy_ADJ_R2[index]<-summary(forward_lr)$adj.r.squared
+  
+  columns = cbind(forecast, accuracy_ADJ_R2, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, accuracy_ACF1)
   results <- as.data.frame(columns)
   row.names(results) <- method_names
   return(results)
@@ -181,5 +186,3 @@ product_id = product_ids[1]
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
 get_product_forecasts(product_data)
-
-
