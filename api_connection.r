@@ -25,7 +25,6 @@ get_token <- function(username, password, url_site){
 }
 
 get_data <- function(start_date='2015-03-20', token, url_site){
-    
     post_body = list(start_date=start_date,username=username,password=password)
     post_url_string = paste0(url_site,'/dataset/')
     
@@ -36,6 +35,8 @@ get_data <- function(start_date='2015-03-20', token, url_site){
     data[,event_date:=as.Date(event_date)]
     data = data[order(product_content_id,event_date)]
     print("Data is loaded to the environment successfully.")
+    csv_name = 'API DATA.csv'
+    write.csv2(data, file = csv_name)
     return(data)
 }
 
