@@ -152,12 +152,6 @@ get_product_forecasts <- function (product) {
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
-  # Stepwise Regression
-  null=lm(sold_count ~ 1, data=product)
-  full=lm(sold_count ~ ., data=product)
-  backward_lr = step(full, scope=list(lower=null, upper=full), direction="backward", trace = 0)
-  forward_lr = step(null, scope=list(lower=null, upper=full), direction="forward", trace = 0)
-  
   # 8. Linear Regression
   index= 8
   lm_model_1<-lm(sold_count~ visit_count+favored_count+basket_count, data=product)
@@ -168,6 +162,13 @@ get_product_forecasts <- function (product) {
   accuracy_ADJ_R2[index]<-summary(lm_model_1)$adj.r.squared
   accuracy_MAE[index] <-MAE(lm_model_1$fitted.values,product$sold_count)
   accuracy_RMSE[index] <- sqrt(MSE(lm_model_1$fitted.values,product$sold_count))
+  
+  # Stepwise Regression
+  null=lm(sold_count ~ 1, data=product)
+  full=lm(sold_count ~ ., data=product)
+  backward_lr = step(full, scope=list(lower=null, upper=full), direction="backward", trace = 0)
+  forward_lr = step(null, scope=list(lower=null, upper=full), direction="forward", trace = 0)
+  
   # 9. Stepwise Regression - Backward
   index = 9
   newdata_f<-product[(nrow(product)-1):nrow(product),]
@@ -175,6 +176,8 @@ get_product_forecasts <- function (product) {
   preds<-predict(backward_lr, newdata = newdata_f)
   forecast[index] <- preds[2]
   accuracy_ADJ_R2[index]<-summary(backward_lr)$adj.r.squared
+  accuracy_MAE[index] <-MAE(backward_lr$fitted.values,product$sold_count)
+  accuracy_RMSE[index] <- sqrt(MSE(backward_lr$fitted.values,product$sold_count))
   
   # 10. Stepwise Regression - Forward
   index = 10
@@ -183,6 +186,8 @@ get_product_forecasts <- function (product) {
   preds<-predict(forward_lr, newdata = newdata_f)
   forecast[index] <- preds[2]
   accuracy_ADJ_R2[index]<-summary(forward_lr)$adj.r.squared
+  accuracy_MAE[index] <-MAE(forward_lr$fitted.values,product$sold_count)
+  accuracy_RMSE[index] <- sqrt(MSE(forward_lr$fitted.values,product$sold_count))
   
   columns = cbind(forecast, accuracy_ADJ_R2, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, accuracy_ACF1)
   results <- as.data.frame(columns)
