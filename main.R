@@ -4,6 +4,7 @@ source("api_connection.R")
 require("forecast")
 require("ggplot2")
 require("xts")
+require("greybox")
 
 make_xts <- function(product1) {
   data_seq <- seq(from = first(product1$event_date),
@@ -184,8 +185,13 @@ get_product_forecasts <- function (product) {
 
 product_ids = unique(data$product_content_id)
 product_id = product_ids[1]
+print(product_id)
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
+product_data = tail(product_data, 135)
 get_product_forecasts(product_data)
 
-
+predictions[product_content_id == product_id]$forecast = 0
+predictions
+check_format(predictions)
+send_submission(predictions, token, url=subm_url, submit_now=F)

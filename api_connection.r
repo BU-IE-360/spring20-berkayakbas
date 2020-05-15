@@ -40,72 +40,74 @@ get_data <- function(start_date='2015-03-20', token, url_site){
     return(data)
 }
 
-send_submission <- function(predictions, submit_now=F){
-    
-    format_check=check_format(predictions)
-    if(!format_check){
-        return(FALSE)
-    }
-    
-    post_string="list("
-    for(i in 1:nrow(predictions)){
-        post_string=sprintf("%s'%s'=%s",post_string,predictions$product_content_id[i],predictions$forecast[i])
-        if(i<nrow(predictions)){
-            post_string=sprintf("%s,",post_string)
-        } else {
-            post_string=sprintf("%s)",post_string)
-        }
-    }
-    
-    submission = eval(parse(text=post_string))
-    json_body = jsonlite::toJSON(submission, auto_unbox = TRUE)
-    submission=list(submission=json_body)
-    
-    print(submission)
-    # {"31515569":2.4,"32939029":2.4,"4066298":2.4,"6676673":2.4,"7061886":2.4,"85004":2.4} 
-
-    if(!submit_now){
-        print("You did not submit.")
-        return(FALSE)      
-    }
-    
-
-    header = add_headers(c(Authorization=paste('Token',token,sep=' ')))
-    post_url_string = paste0(url_site,'/submission/')
-    result = POST(post_url_string, header, body=submission)
-    
-    if (result$status_code==201){
-        print("Successfully submitted. Below you can see the details of your submission")
+send_submission <- function(predictions, token, url_site, submit_now=F){
+  
+  format_check=check_format(predictions)
+  if(!format_check){
+    return(FALSE)
+  }
+  
+  post_string="list("
+  for(i in 1:nrow(predictions)){
+    post_string=sprintf("%s'%s'=%s",post_string,predictions$product_content_id[i],predictions$forecast[i])
+    if(i<nrow(predictions)){
+      post_string=sprintf("%s,",post_string)
     } else {
-        print("Could not submit. Please check the error message below, contact the assistant if needed.")
+      post_string=sprintf("%s)",post_string)
     }
-    
-    print(content(result))
-    
+  }
+  
+  submission = eval(parse(text=post_string))
+  json_body = jsonlite::toJSON(submission, auto_unbox = TRUE)
+  submission=list(submission=json_body)
+  
+  print(submission)
+  # {"31515569":2.4,"32939029":2.4,"4066298":2.4,"6676673":2.4,"7061886":2.4,"85004":2.4} 
+  
+  if(!submit_now){
+    print("You did not submit.")
+    return(FALSE)      
+  }
+  
+  
+  header = add_headers(c(Authorization=paste('Token',token,sep=' ')))
+  post_url_string = paste0(url_site,'/submission/')
+  result = POST(post_url_string, header, body=submission)
+  
+  if (result$status_code==201){
+    print("Successfully submitted. Below you can see the details of your submission")
+  } else {
+    print("Could not submit. Please check the error message below, contact the assistant if needed.")
+  }
+  
+  print(content(result))
+  
 }
 
 check_format <- function(predictions){
-    
-    if(is.data.frame(predictions) | is.data.frame(predictions)){
-        if(all(c('product_content_id','forecast') %in% names(predictions))){
-            if(is.numeric(predictions$forecast)){
-                print("Format OK")
-                return(TRUE)
-            } else {
-                print("forecast information is not numeric")
-                return(FALSE)                
-            }
-        } else {
-            print("Wrong column names. Please provide 'product_content_id' and 'forecast' columns")
-            return(FALSE)
-        }
-        
+  
+  if(is.data.frame(predictions) | is.data.frame(predictions)){
+    if(all(c('product_content_id','forecast') %in% names(predictions))){
+      if(is.numeric(predictions$forecast)){
+        print("Format OK")
+        return(TRUE)
+      } else {
+        print("forecast information is not numeric")
+        return(FALSE)                
+      }
     } else {
-        print("Wrong format. Please provide data.frame or data.table object")
-        return(FALSE)
+      print("Wrong column names. Please provide 'product_content_id' and 'forecast' columns")
+      return(FALSE)
     }
     
+  } else {
+    print("Wrong format. Please provide data.frame or data.table object")
+    return(FALSE)
+  }
+  
 }
+
+
 
 token = get_token(username=username, password=password, url=subm_url)
 data = get_data(token=token,url=subm_url)
@@ -114,4 +116,4 @@ data = get_data(token=token,url=subm_url)
 predictions=unique(data[,list(product_content_id)])
 predictions[,forecast:=0]
 
-# send_submission(predictions, token, url=subm_url, submit_now=F)
+send_submission(predictions, token, url=subm_url, submit_now=F)
