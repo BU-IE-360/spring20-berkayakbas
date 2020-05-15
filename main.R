@@ -158,7 +158,8 @@ get_product_forecasts <- function (product) {
   preds<-predict(lm_model_1, newdata = newdata_f)
   forecast[index] <- preds[2]
   accuracy_ADJ_R2[index]<-summary(lm_model_1)$adj.r.squared
-  
+  accuracy_MAE[index] <-MAE(lm_model_1$fitted.values,product$sold_count)
+  accuracy_RMSE[index] <- sqrt(MSE(lm_model_1$fitted.values,product$sold_count))
   # 9. Stepwise Regression - Backward
   index = 9
   newdata_f<-product[(nrow(product)-1):nrow(product),]
@@ -186,3 +187,5 @@ product_id = product_ids[1]
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
 get_product_forecasts(product_data)
+
+
