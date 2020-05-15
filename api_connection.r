@@ -37,6 +37,7 @@ get_data <- function(start_date='2015-03-20', token, url_site){
     print("Data is loaded to the environment successfully.")
     csv_name = 'API DATA.csv'
     write.csv2(data, file = csv_name)
+    data_last_updated_at <<- Sys.time()
     return(data)
 }
 
@@ -106,14 +107,3 @@ check_format <- function(predictions){
   }
   
 }
-
-
-
-token = get_token(username=username, password=password, url=subm_url)
-data = get_data(token=token,url=subm_url)
-
-# Initialize predictions
-predictions=unique(data[,list(product_content_id)])
-predictions[,forecast:=0]
-
-send_submission(predictions, token, url=subm_url, submit_now=F)

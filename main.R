@@ -6,25 +6,32 @@ require("ggplot2")
 require("xts")
 require("greybox")
 
-make_xts <- function(product1) {
-  data_seq <- seq(from = first(product1$event_date),
-                  last(product1$event_date),
+make_xts <- function(product_data) {
+  # Imporevement of data for regression
+  product_data[,lag1_sold_count:=shift(sold_count,1)]
+  product_data[,lag7_sold_count:=shift(sold_count,7)]
+  product_data[,lag28_sold_count:=shift(sold_count,28)]
+  product_data[,lag365_sold_count:=shift(sold_count,365)]
+  
+  data_seq <- seq(from = first(product_data$event_date),
+                  last(product_data$event_date),
                   by = "days")
   
   data_seq1 <-
     seq(
-      from = first(product1[product1$sold_count != 0, ]$event_date),
-      last(product1$event_date),
+      from = first(product_data[product_data$sold_count != 0, ]$event_date),
+      last(product_data$event_date),
       by = "days"
     )
   
   x1 <- (length(data_seq) - length(data_seq1))
-  product1 <- product1[(x1 + 1):length(data_seq),]
-  product1$event_date <- NULL
-  product1$product_content_id <- NULL
-  product1 <- sapply(product1, as.numeric)
-  product1 <- xts(product1, order.by = data_seq1)
-  return(product1)
+  product_data <- product_data[(x1 + 1):length(data_seq),]
+  product_data$event_date <- NULL
+  product_data$product_content_id <- NULL
+  product_data <- sapply(product_data, as.numeric)
+  product_data[is.na(product_data)] <- 0
+  product_data <- xts(product_data, order.by = data_seq1)
+  return(product_data)
 }
 
 # Her bir method için;
@@ -183,15 +190,34 @@ get_product_forecasts <- function (product) {
   return(results)
 }
 
+# API Connection
+# If data is updated in last 60 minutes, it uses offline data.
+if (exists("data_last_updated_at")) {
+  is_data_old = difftime(Sys.time(), data_last_updated_at) > 60 * 60
+} else {is_data_old = TRUE}
+if (is_data_old) {
+  token = get_token(username = username,password = password,url = subm_url)
+  data = get_data(token = token, url = subm_url)
+}
+
+
+# Initialize predictions
+predictions=unique(data[,list(product_content_id)])
+predictions[,forecast:=NA]
+print(paste0("Last event date: ", tail(data, 1)$event_date))
+
+# Product Analysis
 product_ids = unique(data$product_content_id)
-product_id = product_ids[1]
-print(product_id)
+product_id = product_ids[2]
+print(paste0("Product ID:", product_id))
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
 product_data = tail(product_data, 135)
 get_product_forecasts(product_data)
 
+# Set Product Prediction
 predictions[product_content_id == product_id]$forecast = 0
 predictions
-check_format(predictions)
-send_submission(predictions, token, url=subm_url, submit_now=F)
+
+# Send Submission
+#send_submission(predictions, token, url=subm_url, submit_now=F)
