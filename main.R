@@ -64,7 +64,7 @@ get_product_forecasts <- function (product) {
     'Stepwise Backward',
     'Stepwise Forward'
   )
-  
+  testplots<-as.list(rep(NA, length(method_names)))
   forecast <- rep(NA, length(method_names))
   accuracy_ADJ_R2<- rep(NA, length(method_names))
   accuracy_ME <- rep(NA, length(method_names))
@@ -108,6 +108,9 @@ get_product_forecasts <- function (product) {
   accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
   accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
   
+  preds_1<- xts(model$mean, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
   
   # 2. Mean Forecast
   index = 2
@@ -129,6 +132,10 @@ get_product_forecasts <- function (product) {
   accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
   accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
   accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
+  
+  preds_1<- xts(model$mean, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
   
   # 3. Holt Winters Additive
   index = 3
@@ -152,6 +159,10 @@ get_product_forecasts <- function (product) {
   accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
   accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
   
+  preds_1<- xts(forecast(model, h=nrow(test_data))$mean, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
+  
   # 4. Holt Winters Multiplicative
   index=4
   if (sum(ts(product$sold_count , frequency = 7)[, 1] == 0) == 0) {
@@ -174,6 +185,9 @@ get_product_forecasts <- function (product) {
     accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
     accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
     accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
+    preds_1<- xts(forecast(model, h=nrow(test_data))$mean, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+    testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+    lines(preds_1, col = "red")
   }
   else {
     forecast[4] <- NA
@@ -201,6 +215,10 @@ get_product_forecasts <- function (product) {
   accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
   accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
   
+  preds_1<- xts(model$mean, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
+  
   # 6. Auto Arima
   index = 6
   model = auto.arima(product$sold_count)
@@ -222,7 +240,9 @@ get_product_forecasts <- function (product) {
   accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
   accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
   accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
-  
+  preds_1<- xts(forecast(model, h = nrow(test_data))$mean, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
   # 7. TBATS
   index = 7
   model = tbats(ts(product$sold_count))
@@ -244,6 +264,9 @@ get_product_forecasts <- function (product) {
   accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
   accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
   accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
+  preds_1<- xts(forecast(model, h = nrow(test_data))$mean, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
   
   # 8. Linear Regression
   index= 8
@@ -264,6 +287,10 @@ get_product_forecasts <- function (product) {
   accuracy_test_MAE[index] <-MAE(preds,test_data$sold_count)
   accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
   accuracy_test_MAPE[index] <- mape(test_data$sold_count, preds)
+  
+  preds_1<- xts(preds, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
   
   # Stepwise Regression
   null=lm(sold_count ~ 1, data=product)
@@ -294,6 +321,9 @@ get_product_forecasts <- function (product) {
   accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
   accuracy_test_MAPE[index] <- mape(test_data$sold_count, preds)
   
+  preds_1<- xts(preds, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
   # 10. Stepwise Regression - Forward
   index = 10
   newdata_f<-product[(nrow(product)-1):nrow(product),]
@@ -312,12 +342,16 @@ get_product_forecasts <- function (product) {
   accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
   accuracy_test_MAPE[index] <- mape(test_data$sold_count, preds)
   
+  preds_1<- xts(preds, order.by= seq(first(index(test_data)),last(index(test_data)), by="days"))
+  testplots[[index]]<-plot(c(train_data$sold_count,test_data$sold_count), main = paste0(method_names[index]))
+  lines(preds_1, col = "red")
+  
   columns = cbind(forecast, accuracy_ADJ_R2, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, 
                   accuracy_ACF1,accuracy_test_ADJ_R2, accuracy_test_ME, accuracy_test_RMSE,
                   accuracy_test_MAE,accuracy_test_MAPE,accuracy_test_MASE)
   results <- as.data.frame(columns)
   row.names(results) <- method_names
-  return(results)
+  return(c(list(results),testplots))
 }
 
 # API Connection
@@ -344,6 +378,8 @@ product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
 product_data = tail(product_data, 135)
 get_product_forecasts(product_data)
+
+
 
 # Set Product Prediction
 predictions[product_content_id == product_id]$forecast = 0
