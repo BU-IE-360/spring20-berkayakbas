@@ -6,6 +6,11 @@ require("ggplot2")
 require("xts")
 require("greybox")
 
+mape <- function(actual,preds){
+  mape <- mean(abs((actual - preds)/actual))*100
+  return (mape)
+}
+
 make_xts <- function(product_data) {
   # Imporevement of data for regression
   product_data[,lag1_sold_count:=shift(sold_count,1)]
@@ -169,6 +174,7 @@ get_product_forecasts <- function (product) {
   accuracy_ADJ_R2[index]<-summary(lm_model_1)$adj.r.squared
   accuracy_MAE[index] <-MAE(lm_model_1$fitted.values,product$sold_count)
   accuracy_RMSE[index] <- sqrt(MSE(lm_model_1$fitted.values,product$sold_count))
+  accuracy_MAPE[index] <- mape(product_data$sold_count, lm_model_1$fitted.values)
   
   # Stepwise Regression
   null=lm(sold_count ~ 1, data=product)
@@ -185,6 +191,7 @@ get_product_forecasts <- function (product) {
   accuracy_ADJ_R2[index]<-summary(backward_lr)$adj.r.squared
   accuracy_MAE[index] <-MAE(backward_lr$fitted.values,product$sold_count)
   accuracy_RMSE[index] <- sqrt(MSE(backward_lr$fitted.values,product$sold_count))
+  accuracy_MAPE[index] <- mape(product_data$sold_count, backward_lr$fitted.values)
   
   # 10. Stepwise Regression - Forward
   index = 10
@@ -195,6 +202,7 @@ get_product_forecasts <- function (product) {
   accuracy_ADJ_R2[index]<-summary(forward_lr)$adj.r.squared
   accuracy_MAE[index] <-MAE(forward_lr$fitted.values,product$sold_count)
   accuracy_RMSE[index] <- sqrt(MSE(forward_lr$fitted.values,product$sold_count))
+  accuracy_MAPE[index] <- mape(product_data$sold_count, forward_lr$fitted.values)
   
   columns = cbind(forecast, accuracy_ADJ_R2, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, accuracy_ACF1)
   results <- as.data.frame(columns)
@@ -233,3 +241,4 @@ predictions
 
 # Send Submission
 #send_submission(predictions, token, url=subm_url, submit_now=F)
+
