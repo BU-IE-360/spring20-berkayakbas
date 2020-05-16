@@ -369,6 +369,7 @@ if (is_data_old) {
   token = get_token(username = username,password = password,url = subm_url)
   data = get_data(token = token, url = subm_url)
 }
+product_names = data.table(read.csv("API Products.csv", sep = ';'))
 
 
 # Initialize predictions
@@ -379,13 +380,12 @@ print(paste0("Last event date: ", tail(data, 1)$event_date))
 # Product Analysis
 product_ids = unique(data$product_content_id)
 product_id = product_ids[1]
-print(paste0("Product ID:", product_id))
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
 product_data = tail(product_data, 135)
 get_product_forecasts(product_data)
-
-
+print(paste0("Product ID:", product_id))
+print(paste0("Product Name: ", product_names[product_content_id == product_id]$bottom_hierarchy))
 
 # Set Product Prediction
 predictions[product_content_id == product_id]$forecast = 0
