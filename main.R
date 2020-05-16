@@ -18,6 +18,9 @@ make_xts <- function(product_data) {
   product_data[,lag28_sold_count:=shift(sold_count,28)]
   product_data[,lag365_sold_count:=shift(sold_count,365)]
   
+  product_data[, 'is_after_corona'] = c(0)
+  product_data[event_date >= as.Date('2020-03-12')]$is_after_corona = c(1)
+  
   # Firstly fills NA prices to last observation, then first price is set for the prior NA prices.
   product_data[price == -1]$price = c(NA)
   product_data$price = na.locf(product_data$price, na.rm = FALSE)
@@ -39,6 +42,8 @@ make_xts <- function(product_data) {
   product_data$event_date <- NULL
   product_data$product_content_id <- NULL
   product_data <- sapply(product_data, as.numeric)
+  # TODO is_after_corona should be factor
+  # product_data$is_after_corona = as.factor(product_data$is_after_corona)
   product_data[is.na(product_data)] <- 0
   product_data <- xts(product_data, order.by = data_seq1)
   return(product_data)
