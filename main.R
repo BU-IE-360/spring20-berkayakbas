@@ -106,11 +106,18 @@ get_product_forecasts <- function (product) {
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
   # 4. Holt Winters Multiplicative
+  index=4
   if (sum(ts(product$sold_count , frequency = 7)[, 1] == 0) == 0) {
-    forecast[4] <-
-      as.numeric(forecast(HoltWinters(
-        ts(product$sold_count , frequency = 7)[, ], seasonal = "multiplicative"
-      ), h = 2)$mean[2])
+      
+    model = HoltWinters(ts(product$sold_count , frequency = 7)[, ], seasonal = "multiplicative")
+    forecast[index] <-as.numeric(forecast(model, h = 2)$mean[2])
+    accuracy = accuracy(forecast(model, h=2))
+    accuracy_ME[index] <- accuracy[, 'ME']
+    accuracy_RMSE[index] <- accuracy[, 'RMSE']
+    accuracy_MAE[index] <- accuracy[, 'MAE']
+    accuracy_MAPE[index] <- accuracy[, 'MAPE']
+    accuracy_MASE[index] <- accuracy[, 'MASE']
+    accuracy_ACF1[index] <- accuracy[, 'ACF1']
   }
   else {
     forecast[4] <- NA
