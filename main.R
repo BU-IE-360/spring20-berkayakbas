@@ -84,9 +84,10 @@ get_product_forecasts <- function (product) {
   
   
   #get train and test subsets of data
-  train_data<-product[1:(nrow(product)*0.8),]
-  test_data<-product[(nrow(train_data)+1):nrow(product),]
-  
+  train_data<-product[1:(nrow(product)-2),]
+  test_data<-product[(nrow(product)-1):nrow(product),]
+  testing_for_newdata<-product[(nrow(train_data)-1):(nrow(product)-2),]
+  index(testing_for_newdata)<-index(testing_for_newdata)+2
   # 1. Naive
   index = 1
   model = naive(product$sold_count, h = 2)
@@ -282,7 +283,7 @@ get_product_forecasts <- function (product) {
   
   # 8.1 Linear Regression Testing
   lm_model_1<-lm(sold_count~ visit_count+favored_count+basket_count, data=train_data)
-  preds<-predict(lm_model_1, newdata = test_data)
+  preds<-predict(lm_model_1, newdata = testing_for_newdata)
   accuracy_test_ADJ_R2[index]<-summary(lm_model_1)$adj.r.squared
   accuracy_test_MAE[index] <-MAE(preds,test_data$sold_count)
   accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
@@ -315,7 +316,7 @@ get_product_forecasts <- function (product) {
   accuracy_MAPE[index] <- mape(product_data$sold_count, backward_lr$fitted.values)
   
   #9.1 Step Backward -Test
-  preds<-predict(backward_lr_test, newdata = test_data)
+  preds<-predict(backward_lr_test, newdata = testing_for_newdata)
   accuracy_test_ADJ_R2[index]<-summary(backward_lr_test)$adj.r.squared
   accuracy_test_MAE[index] <-MAE(preds,test_data$sold_count)
   accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
@@ -336,7 +337,7 @@ get_product_forecasts <- function (product) {
   accuracy_MAPE[index] <- mape(product_data$sold_count, forward_lr$fitted.values)
   
   #10.1 Step Forward Test
-  preds<-predict(forward_lr_test, newdata = test_data)
+  preds<-predict(forward_lr_test, newdata = testing_for_newdata)
   accuracy_test_ADJ_R2[index]<-summary(forward_lr_test)$adj.r.squared
   accuracy_test_MAE[index] <-MAE(preds,test_data$sold_count)
   accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
@@ -372,7 +373,7 @@ print(paste0("Last event date: ", tail(data, 1)$event_date))
 
 # Product Analysis
 product_ids = unique(data$product_content_id)
-product_id = product_ids[2]
+product_id = product_ids[3]
 print(paste0("Product ID:", product_id))
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
@@ -389,4 +390,4 @@ predictions
 #send_submission(predictions, token, url=subm_url, submit_now=F)
 
 
-
+acf(product_data$sold_count)
