@@ -18,6 +18,11 @@ make_xts <- function(product_data) {
   product_data[,lag28_sold_count:=shift(sold_count,28)]
   product_data[,lag365_sold_count:=shift(sold_count,365)]
   
+  # Firstly fills NA prices to last observation, then first price is set for the prior NA prices.
+  product_data[price == -1]$price = c(NA)
+  product_data$price = na.locf(product_data$price, na.rm = FALSE)
+  product_data$price = na.locf(product_data$price, na.rm = FALSE, fromLast = TRUE)
+  
   data_seq <- seq(from = first(product_data$event_date),
                   last(product_data$event_date),
                   by = "days")
@@ -373,7 +378,7 @@ print(paste0("Last event date: ", tail(data, 1)$event_date))
 
 # Product Analysis
 product_ids = unique(data$product_content_id)
-product_id = product_ids[3]
+product_id = product_ids[1]
 print(paste0("Product ID:", product_id))
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
