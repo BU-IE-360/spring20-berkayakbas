@@ -74,6 +74,19 @@ get_product_forecasts <- function (product) {
   accuracy_MASE <- rep(NA, length(method_names))
   accuracy_ACF1 <- rep(NA, length(method_names))
   
+  #set test metrics
+  accuracy_test_ADJ_R2<- rep(NA, length(method_names))
+  accuracy_test_ME <- rep(NA, length(method_names))
+  accuracy_test_RMSE <- rep(NA, length(method_names))
+  accuracy_test_MAE <- rep(NA, length(method_names))
+  accuracy_test_MAPE <- rep(NA, length(method_names))
+  accuracy_test_MASE <- rep(NA, length(method_names))
+  
+  
+  #get train and test subsets of data
+  train_data<-product[1:(nrow(product)*0.8),]
+  test_data<-product[(nrow(train_data)+1):nrow(product),]
+  
   # 1. Naive
   index = 1
   model = naive(product$sold_count, h = 2)
@@ -85,6 +98,16 @@ get_product_forecasts <- function (product) {
   accuracy_MAPE[index] <- accuracy[, 'MAPE']
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
+  
+  #1.1 Naive Testing
+  model=naive(train_data$sold_count, h = nrow(test_data))
+  accuracy=accuracy(model, test_data$sold_count)
+  accuracy_test_ME[index] <- accuracy["Test set", 'ME']
+  accuracy_test_RMSE[index] <- accuracy["Test set", 'RMSE']
+  accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
+  accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
+  accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
+  
   
   # 2. Mean Forecast
   index = 2
@@ -98,6 +121,15 @@ get_product_forecasts <- function (product) {
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- NA
   
+  #2.1. Mean Testing
+  model=meanf(train_data$sold_count, h = nrow(test_data))
+  accuracy=accuracy(model, test_data$sold_count)
+  accuracy_test_ME[index] <- accuracy["Test set", 'ME']
+  accuracy_test_RMSE[index] <- accuracy["Test set", 'RMSE']
+  accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
+  accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
+  accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
+  
   # 3. Holt Winters Additive
   index = 3
   model = HoltWinters(ts(product$sold_count , frequency = 7)[, ], seasonal = "additive")
@@ -109,6 +141,16 @@ get_product_forecasts <- function (product) {
   accuracy_MAPE[index] <- accuracy[, 'MAPE']
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
+  
+  #3.1 HW Add Testing
+  
+  model=HoltWinters(ts(train_data$sold_count , frequency = 7)[, ], seasonal = "additive")
+  accuracy = accuracy(forecast(model, h=nrow(test_data)), test_data$sold_count)
+  accuracy_test_ME[index] <- accuracy["Test set", 'ME']
+  accuracy_test_RMSE[index] <- accuracy["Test set", 'RMSE']
+  accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
+  accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
+  accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
   
   # 4. Holt Winters Multiplicative
   index=4
@@ -123,6 +165,15 @@ get_product_forecasts <- function (product) {
     accuracy_MAPE[index] <- accuracy[, 'MAPE']
     accuracy_MASE[index] <- accuracy[, 'MASE']
     accuracy_ACF1[index] <- accuracy[, 'ACF1']
+    
+    #HW Mult testing
+    model=HoltWinters(ts(train_data$sold_count , frequency = 7)[, ], seasonal = "multiplicative")
+    accuracy = accuracy(forecast(model, h=nrow(test_data)), test_data$sold_count)
+    accuracy_test_ME[index] <- accuracy["Test set", 'ME']
+    accuracy_test_RMSE[index] <- accuracy["Test set", 'RMSE']
+    accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
+    accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
+    accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
   }
   else {
     forecast[4] <- NA
@@ -140,6 +191,16 @@ get_product_forecasts <- function (product) {
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
+  #5.1 Exp Smt Testing
+  
+  model=ses(train_data$sold_count, h = nrow(test_data))
+  accuracy=accuracy(model, test_data$sold_count)
+  accuracy_test_ME[index] <- accuracy["Test set", 'ME']
+  accuracy_test_RMSE[index] <- accuracy["Test set", 'RMSE']
+  accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
+  accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
+  accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
+  
   # 6. Auto Arima
   index = 6
   model = auto.arima(product$sold_count)
@@ -151,6 +212,16 @@ get_product_forecasts <- function (product) {
   accuracy_MAPE[index] <- accuracy[, 'MAPE']
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
+  
+  # 6.1 Auto Arima Testing
+  
+  model=auto.arima(train_data$sold_count)
+  accuracy=accuracy(forecast(model, h = nrow(test_data)), test_data$sold_count)
+  accuracy_test_ME[index] <- accuracy["Test set", 'ME']
+  accuracy_test_RMSE[index] <- accuracy["Test set", 'RMSE']
+  accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
+  accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
+  accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
   
   # 7. TBATS
   index = 7
@@ -204,7 +275,9 @@ get_product_forecasts <- function (product) {
   accuracy_RMSE[index] <- sqrt(MSE(forward_lr$fitted.values,product$sold_count))
   accuracy_MAPE[index] <- mape(product_data$sold_count, forward_lr$fitted.values)
   
-  columns = cbind(forecast, accuracy_ADJ_R2, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, accuracy_ACF1)
+  columns = cbind(forecast, accuracy_ADJ_R2, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, 
+                  accuracy_ACF1,accuracy_test_ADJ_R2, accuracy_test_ME, accuracy_test_RMSE,
+                  accuracy_test_MAE,accuracy_test_MAPE,accuracy_test_MASE)
   results <- as.data.frame(columns)
   row.names(results) <- method_names
   return(results)
@@ -241,4 +314,6 @@ predictions
 
 # Send Submission
 #send_submission(predictions, token, url=subm_url, submit_now=F)
+
+
 
