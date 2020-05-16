@@ -390,4 +390,18 @@ predictions
 #send_submission(predictions, token, url=subm_url, submit_now=F)
 
 
-acf(product_data$sold_count)
+
+
+#-----------------BEGIN-----------------------
+#Time series Cross Validation Denemeleri
+#autoarima_forecast <- function(x, h){forecast(auto.arima(x), h=h)}
+
+#e1<- tsCV(product_data$sold_count, ses, h=2)
+
+#e1[3:nrow(e1),]=e1[1:(nrow(e1)-2),]
+#e1[1:2,]=NA
+#mape(product_data[3:nrow(e1)]$sold_count,(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2]))
+#accuracy((ts(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2])), product_data[3:nrow(e1)]$sold_count)
+
+#-----------------END--------------------------
+
