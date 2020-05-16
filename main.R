@@ -235,6 +235,16 @@ get_product_forecasts <- function (product) {
   accuracy_MASE[index] <- accuracy[, 'MASE']
   accuracy_ACF1[index] <- accuracy[, 'ACF1']
   
+  #7.1 TBATS Testing
+  
+  model=tbats(ts(train_data$sold_count))
+  accuracy=accuracy(forecast(model, h = nrow(test_data)), test_data$sold_count)
+  accuracy_test_ME[index] <- accuracy["Test set", 'ME']
+  accuracy_test_RMSE[index] <- accuracy["Test set", 'RMSE']
+  accuracy_test_MAE[index] <- accuracy["Test set", 'MAE']
+  accuracy_test_MAPE[index] <- accuracy["Test set", 'MAPE']
+  accuracy_test_MASE[index] <- accuracy["Test set", 'MASE']
+  
   # 8. Linear Regression
   index= 8
   lm_model_1<-lm(sold_count~ visit_count+favored_count+basket_count, data=product)
@@ -247,11 +257,24 @@ get_product_forecasts <- function (product) {
   accuracy_RMSE[index] <- sqrt(MSE(lm_model_1$fitted.values,product$sold_count))
   accuracy_MAPE[index] <- mape(product_data$sold_count, lm_model_1$fitted.values)
   
+  # 8.1 Linear Regression Testing
+  lm_model_1<-lm(sold_count~ visit_count+favored_count+basket_count, data=train_data)
+  preds<-predict(lm_model_1, newdata = test_data)
+  accuracy_test_ADJ_R2[index]<-summary(lm_model_1)$adj.r.squared
+  accuracy_test_MAE[index] <-MAE(preds,test_data$sold_count)
+  accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
+  accuracy_test_MAPE[index] <- mape(test_data$sold_count, preds)
+  
   # Stepwise Regression
   null=lm(sold_count ~ 1, data=product)
   full=lm(sold_count ~ ., data=product)
   backward_lr = step(full, scope=list(lower=null, upper=full), direction="backward", trace = 0)
   forward_lr = step(null, scope=list(lower=null, upper=full), direction="forward", trace = 0)
+  
+  null_test=lm(sold_count ~ 1, data=train_data)
+  full_test=lm(sold_count ~ ., data=train_data)
+  backward_lr_test = step(full, scope=list(lower=null, upper=full), direction="backward", trace = 0)
+  forward_lr_test = step(null, scope=list(lower=null, upper=full), direction="forward", trace = 0)
   
   # 9. Stepwise Regression - Backward
   index = 9
@@ -264,6 +287,13 @@ get_product_forecasts <- function (product) {
   accuracy_RMSE[index] <- sqrt(MSE(backward_lr$fitted.values,product$sold_count))
   accuracy_MAPE[index] <- mape(product_data$sold_count, backward_lr$fitted.values)
   
+  #9.1 Step Backward -Test
+  preds<-predict(backward_lr_test, newdata = test_data)
+  accuracy_test_ADJ_R2[index]<-summary(backward_lr_test)$adj.r.squared
+  accuracy_test_MAE[index] <-MAE(preds,test_data$sold_count)
+  accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
+  accuracy_test_MAPE[index] <- mape(test_data$sold_count, preds)
+  
   # 10. Stepwise Regression - Forward
   index = 10
   newdata_f<-product[(nrow(product)-1):nrow(product),]
@@ -274,6 +304,13 @@ get_product_forecasts <- function (product) {
   accuracy_MAE[index] <-MAE(forward_lr$fitted.values,product$sold_count)
   accuracy_RMSE[index] <- sqrt(MSE(forward_lr$fitted.values,product$sold_count))
   accuracy_MAPE[index] <- mape(product_data$sold_count, forward_lr$fitted.values)
+  
+  #10.1 Step Forward Test
+  preds<-predict(forward_lr_test, newdata = test_data)
+  accuracy_test_ADJ_R2[index]<-summary(forward_lr_test)$adj.r.squared
+  accuracy_test_MAE[index] <-MAE(preds,test_data$sold_count)
+  accuracy_test_RMSE[index] <- sqrt(MSE(preds,test_data$sold_count))
+  accuracy_test_MAPE[index] <- mape(test_data$sold_count, preds)
   
   columns = cbind(forecast, accuracy_ADJ_R2, accuracy_ME, accuracy_RMSE, accuracy_MAE, accuracy_MAPE, accuracy_MASE, 
                   accuracy_ACF1,accuracy_test_ADJ_R2, accuracy_test_ME, accuracy_test_RMSE,
