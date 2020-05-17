@@ -41,9 +41,9 @@ make_xts <- function(product_data) {
   product_data <- product_data[(x1 + 1):length(data_seq),]
   product_data$event_date <- NULL
   product_data$product_content_id <- NULL
-  product_data <- sapply(product_data, as.numeric)
-  # TODO is_after_corona should be factor
+  product_data <- data.frame(sapply(product_data, as.numeric))
   # product_data$is_after_corona = as.factor(product_data$is_after_corona)
+  # product_data$is_lock_down = as.factor(product_data$is_lock_down)
   product_data[is.na(product_data)] <- 0
   product_data <- xts(product_data, order.by = data_seq1)
   return(product_data)
@@ -365,7 +365,9 @@ if (is_data_old) {
   data = get_data(token = token, url = subm_url)
 }
 product_names = data.table(read.csv("API Products.csv", sep = ';'))
-
+date_annotation = read.csv('date_annotation.csv')
+date_annotation = data.frame(sapply(date_annotation, as.Date))
+data[,"is_lock_down"] = as.numeric(data$event_date %in% date_annotation$lock_down_dates)
 
 # Initialize predictions
 predictions=unique(data[,list(product_content_id)])
