@@ -279,7 +279,7 @@ get_product_forecasts <- function (product) {
   accuracy_ADJ_R2[index]<-summary(lm_model_1)$adj.r.squared
   accuracy_MAE[index] <-MAE(lm_model_1$fitted.values,product$sold_count)
   accuracy_RMSE[index] <- sqrt(MSE(lm_model_1$fitted.values,product$sold_count))
-  accuracy_MAPE[index] <- mape(product_data$sold_count, lm_model_1$fitted.values)
+  accuracy_MAPE[index] <- mape(product$sold_count, lm_model_1$fitted.values)
   
   # 8.1 Linear Regression Testing
   lm_model_1<-lm(sold_count~ visit_count+favored_count+basket_count, data=train_data)
@@ -313,7 +313,7 @@ get_product_forecasts <- function (product) {
   accuracy_ADJ_R2[index]<-summary(backward_lr)$adj.r.squared
   accuracy_MAE[index] <-MAE(backward_lr$fitted.values,product$sold_count)
   accuracy_RMSE[index] <- sqrt(MSE(backward_lr$fitted.values,product$sold_count))
-  accuracy_MAPE[index] <- mape(product_data$sold_count, backward_lr$fitted.values)
+  accuracy_MAPE[index] <- mape(product$sold_count, backward_lr$fitted.values)
   
   #9.1 Step Backward -Test
   preds<-predict(backward_lr_test, newdata = testing_for_newdata)
@@ -334,7 +334,7 @@ get_product_forecasts <- function (product) {
   accuracy_ADJ_R2[index]<-summary(forward_lr)$adj.r.squared
   accuracy_MAE[index] <-MAE(forward_lr$fitted.values,product$sold_count)
   accuracy_RMSE[index] <- sqrt(MSE(forward_lr$fitted.values,product$sold_count))
-  accuracy_MAPE[index] <- mape(product_data$sold_count, forward_lr$fitted.values)
+  accuracy_MAPE[index] <- mape(product$sold_count, forward_lr$fitted.values)
   
   #10.1 Step Forward Test
   preds<-predict(forward_lr_test, newdata = testing_for_newdata)
@@ -402,7 +402,7 @@ predictions
 
 #e1[3:nrow(e1),]=e1[1:(nrow(e1)-2),]
 #e1[1:2,]=NA
-#mape(product_data[3:nrow(e1)]$sold_count,(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2]))
+#mape(product[3:nrow(e1)]$sold_count,(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2]))
 #accuracy((ts(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2])), product_data[3:nrow(e1)]$sold_count)
 
 #-----------------END--------------------------
