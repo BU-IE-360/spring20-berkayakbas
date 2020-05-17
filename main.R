@@ -49,16 +49,6 @@ make_xts <- function(product_data) {
   return(product_data)
 }
 
-# Her bir method için;
-# input product datası,
-# outputs
-# 1. point forecast (h=1) + plot
-# 2. AIC, BIC accuracy, chechresiduals ()
-# 3. data.table ile AIC, BIC ve point forecast'in return edilmesi
-
-#   3.2 Linear Regression @BERKAY
-#   3.5 Arima @BBG
-
 
 get_product_forecasts <- function (product) {
   # 0. Initialization of vectors
