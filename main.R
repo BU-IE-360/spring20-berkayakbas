@@ -50,7 +50,7 @@ make_xts <- function(product_data) {
 }
 
 
-get_product_forecasts <- function (product) {
+get_product_forecasts <- function (product, test_period) {
   # 0. Initialization of vectors
   method_names = c(
     'Naive',
@@ -84,10 +84,17 @@ get_product_forecasts <- function (product) {
   
   
   #get train and test subsets of data
-  train_data<-product[1:(nrow(product)-2),]
-  test_data<-product[(nrow(product)-1):nrow(product),]
-  testing_for_newdata<-product[(nrow(train_data)-1):(nrow(product)-2),]
+  if(test_period==1){
+  train_data<-product[1:(nrow(product)*0.8),]
+  test_data<-product[(nrow(train_data)+1):nrow(product),]
+  testing_for_newdata<-product[(nrow(train_data)-nrow(test_data)+1):(nrow(train_data)),]
   index(testing_for_newdata)<-index(testing_for_newdata)+2
+  } else{
+    train_data<-product[1:(nrow(product)-2),]
+    test_data<-product[(nrow(product)-1):nrow(product),]
+    testing_for_newdata<-product[(nrow(train_data)-1):(nrow(train_data)),]
+    index(testing_for_newdata)<-index(testing_for_newdata)+2
+  }
   # 1. Naive
   index = 1
   model = naive(product$sold_count, h = 2)
@@ -371,7 +378,7 @@ data[,"is_lock_down"] = as.numeric(data$event_date %in% date_annotation$lock_dow
 
 # Initialize predictions
 predictions=unique(data[,list(product_content_id)])
-predictions[,forecast:=NA]
+predictions[,forecast:=0]
 print(paste0("Last event date: ", tail(data, 1)$event_date))
 
 # Product Analysis
@@ -379,8 +386,12 @@ product_ids = unique(data$product_content_id)
 product_id = product_ids[1]
 product_data = data[product_content_id == product_id]
 product_data = make_xts(product_data)
-product_data = tail(product_data, 135)
-get_product_forecasts(product_data)
+#nrow_productdata<-nrow(product_data)
+#it_number<-0
+#product_data = product_data[(nrow_productdata-177-it_number):(nrow_productdata-it_number),]
+
+product_data=tail(product_data,135)
+get_product_forecasts(product_data, test_period=1)
 print(paste0("Product ID:", product_id))
 print(paste0("Product Name: ", product_names[product_content_id == product_id]$bottom_hierarchy))
 
@@ -392,17 +403,15 @@ predictions
 #send_submission(predictions, token, url=subm_url, submit_now=F)
 
 
-
-
 #-----------------BEGIN-----------------------
 #Time series Cross Validation Denemeleri
 #autoarima_forecast <- function(x, h){forecast(auto.arima(x), h=h)}
 
-#e1<- tsCV(product_data$sold_count, ses, h=2)
+#e1<- tsCV(product_data$sold_count, autoarima_forecast, h=2)
 
 #e1[3:nrow(e1),]=e1[1:(nrow(e1)-2),]
 #e1[1:2,]=NA
-#mape(product[3:nrow(e1)]$sold_count,(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2]))
+#mape(product_data[3:nrow(e1)]$sold_count,(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2]))
 #accuracy((ts(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2])), product_data[3:nrow(e1)]$sold_count)
 
 #-----------------END--------------------------
