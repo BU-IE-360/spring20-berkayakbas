@@ -407,12 +407,85 @@ predictions
 #Time series Cross Validation Denemeleri
 #autoarima_forecast <- function(x, h){forecast(auto.arima(x), h=h)}
 
-#e1<- tsCV(product_data$sold_count, autoarima_forecast, h=2)
-
+#e1<- tsCV(product_data$sold_count, meanf, h=2)
 #e1[3:nrow(e1),]=e1[1:(nrow(e1)-2),]
 #e1[1:2,]=NA
 #mape(product_data[3:nrow(e1)]$sold_count,(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2]))
 #accuracy((ts(product_data[3:nrow(e1)]$sold_count+e1[3:nrow(e1),2])), product_data[3:nrow(e1)]$sold_count)
 
 #-----------------END--------------------------
+
+get_mape_for_rollingorigin<-function(product_data){
+  
+  method_names = c(
+    'Naive',
+    'Mean',
+    'HW_Additive',
+    'HW_Multiplicative',
+    'Exponential Smoothing',
+    'Auto Arima',
+    'TBATS',
+    'Linear Regression',
+    'Stepwise Backward',
+    'Stepwise Forward'
+  )
+  accuracy_MAPE <- rep(NA, length(method_names))
+  
+  index=1
+  ourcall<-"naive(x=data, h=h)"
+  ourValue<-"mean"
+  ro_denemee <- ro(ts(product_data$sold_count,frequency = 7), h=2, origins=(nrow(product_data)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
+  plot(ro_denemee)
+  accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  
+  index=2
+  ourcall<-"meanf(x=data, h=h)"
+  ourValue<-"mean"
+  ro_denemee <- ro(ts(product_data$sold_count,frequency = 7), h=2, origins=(nrow(product_data)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
+  plot(ro_denemee)
+  accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  
+  index=3
+  ourcall<-"forecast(HoltWinters(x=data, seasonal = 'additive'), h=h)"
+  ourValue<-"mean"
+  ro_denemee <- ro(ts(product_data$sold_count,frequency = 7), h=2, origins=(nrow(product_data)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
+  plot(ro_denemee)
+  accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  
+  index=4
+  if (sum(ts(product_data$sold_count , frequency = 7)[, 1] == 0) == 0) {
+  ourcall<-"forecast(HoltWinters(x=data, seasonal = 'multiplicative'), h=h)"
+  ourValue<-"mean"
+  ro_denemee <- ro(ts(product_data$sold_count,frequency = 7), h=2, origins=(nrow(product_data)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
+  plot(ro_denemee)
+  accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  }
+  else {
+    accuracy_MAPE[index] <- NA
+  }
+  index=5
+  ourcall<-"ses(x=data, h=h)"
+  ourValue<-"mean"
+  ro_denemee <- ro(ts(product_data$sold_count,frequency = 7), h=2, origins=(nrow(product_data)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
+  plot(ro_denemee)
+  accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  
+  index=6
+  ourcall<-"forecast(auto.arima(x=data), h=h)"
+  ourValue<-"mean"
+  ro_denemee <- ro(ts(product_data$sold_count,frequency = 7), h=2, origins=(nrow(product_data)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
+  plot(ro_denemee)
+  accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  
+  index=7
+  ourcall<-"forecast(tbats(y=data), h=h)"
+  ourValue<-"mean"
+  ro_denemee <- ro(ts(product_data$sold_count,frequency = 7), h=2, origins=(nrow(product_data)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
+  plot(ro_denemee)
+  accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  results <- as.data.frame(accuracy_MAPE)
+  row.names(results) <- method_names
+  return(results)
+}
+get_mape_for_rollingorigin(product_data)
 
