@@ -2,8 +2,8 @@
 method_names = c(
   'Naive',
   'Mean',
-  'HW_Additive',
-  'HW_Multiplicative',
+  'HW Additive',
+  'HW Multiplicative',
   'Exponential Smoothing',
   'Auto Arima',
   'TBATS',
