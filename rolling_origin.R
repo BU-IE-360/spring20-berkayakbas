@@ -1,79 +1,64 @@
-method_names = c(
-  'Naive',
-  'Mean',
-  'HW_Additive',
-  'HW_Multiplicative',
-  'Exponential Smoothing',
-  'Auto Arima',
-  'TBATS',
-  'Linear Regression',
-  'Stepwise Backward',
-  'Stepwise Forward'
-)
-accuracy_MAPE <- rep(NA, length(method_names))
-accuracy_MAE <- rep(NA, length(method_names))
+ro_MAPE <- rep(NA, length(method_names))
+ro_MAE <- rep(NA, length(method_names))
+
+# Common parameters
+ourValue = "mean"
+ourTs = ts(product_data_xts$sold_count,frequency = 7)
+ourOrigins = nrow(product_data_xts)*0.15
 
 index=1
-ourcall<-"naive(x=data, h=h)"
-ourValue<-"mean"
-ro_denemee <- ro(ts(product_data_xts$sold_count,frequency = 7), h=2, origins=(nrow(product_data_xts)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
-plot(ro_denemee)
-accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
-accuracy_MAE[index] <- MAE(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+ourCall<-"naive(x=data, h=h)"
+ro_obj <- ro(ourTs, h=2, origins=ourOrigins, call=ourCall, value=ourValue, ci=FALSE, co=TRUE, parallel=TRUE)
+plot(ro_obj, main = paste0("Rolling Origin - ", method_names[index]))
+ro_MAPE[index] <- MAPE(ro_obj$holdout[2,],ro_obj$mean[2,])
+ro_MAE[index] <- MAE(ro_obj$holdout[2,],ro_obj$mean[2,])
 
 index=2
-ourcall<-"meanf(x=data, h=h)"
-ourValue<-"mean"
-ro_denemee <- ro(ts(product_data_xts$sold_count,frequency = 7), h=2, origins=(nrow(product_data_xts)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
-plot(ro_denemee)
-accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
-accuracy_MAE[index] <- MAE(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+ourCall<-"meanf(x=data, h=h)"
+ro_obj <- ro(ourTs, h=2, origins=ourOrigins, call=ourCall, value=ourValue, ci=FALSE, co=TRUE, parallel=TRUE)
+plot(ro_obj, main = paste0("Rolling Origin - ", method_names[index]))
+ro_MAPE[index] <- MAPE(ro_obj$holdout[2,],ro_obj$mean[2,])
+ro_MAE[index] <- MAE(ro_obj$holdout[2,],ro_obj$mean[2,])
 
 index=3
-ourcall<-"forecast(HoltWinters(x=data, seasonal = 'additive'), h=h)"
-ourValue<-"mean"
-ro_denemee <- ro(ts(product_data_xts$sold_count,frequency = 7), h=2, origins=(nrow(product_data_xts)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
-plot(ro_denemee)
-accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
-accuracy_MAE[index] <- MAE(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+ourCall<-"forecast(HoltWinters(x=data, seasonal = 'additive'), h=h)"
+ro_obj <- ro(ourTs, h=2, origins=ourOrigins, call=ourCall, value=ourValue, ci=FALSE, co=TRUE, parallel=TRUE)
+plot(ro_obj, main = paste0("Rolling Origin - ", method_names[index]))
+ro_MAPE[index] <- MAPE(ro_obj$holdout[2,],ro_obj$mean[2,])
+ro_MAE[index] <- MAE(ro_obj$holdout[2,],ro_obj$mean[2,])
 
 index=4
 if (sum(ts(product_data_xts$sold_count , frequency = 7)[, 1] == 0) == 0) {
-  ourcall<-"forecast(HoltWinters(x=data, seasonal = 'multiplicative'), h=h)"
-  ourValue<-"mean"
-  ro_denemee <- ro(ts(product_data_xts$sold_count,frequency = 7), h=2, origins=(nrow(product_data_xts)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
-  plot(ro_denemee)
-  accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
-  accuracy_MAE[index] <- MAE(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  ourCall<-"forecast(HoltWinters(x=data, seasonal = 'multiplicative'), h=h)"
+  ro_obj <- ro(ourTs, h=2, origins=ourOrigins, call=ourCall, value=ourValue, ci=FALSE, co=TRUE, parallel=TRUE)
+  plot(ro_obj, main = paste0("Rolling Origin - ", method_names[index]))
+  ro_MAPE[index] <- MAPE(ro_obj$holdout[2,],ro_obj$mean[2,])
+  ro_MAE[index] <- MAE(ro_obj$holdout[2,],ro_obj$mean[2,])
 }else {
-  accuracy_MAPE[index] <- NA
-  accuracy_MAE[index] <- MAE(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+  ro_MAPE[index] <- NA
+  ro_MAE[index] <- MAE(ro_obj$holdout[2,],ro_obj$mean[2,])
 }
 
 index=5
-ourcall<-"ses(x=data, h=h)"
-ourValue<-"mean"
-ro_denemee <- ro(ts(product_data_xts$sold_count,frequency = 7), h=2, origins=(nrow(product_data_xts)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
-plot(ro_denemee)
-accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
-accuracy_MAE[index] <- MAE(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+ourCall<-"ses(x=data, h=h)"
+ro_obj <- ro(ourTs, h=2, origins=ourOrigins, call=ourCall, value=ourValue, ci=FALSE, co=TRUE, parallel=TRUE)
+plot(ro_obj, main = paste0("Rolling Origin - ", method_names[index]))
+ro_MAPE[index] <- MAPE(ro_obj$holdout[2,],ro_obj$mean[2,])
+ro_MAE[index] <- MAE(ro_obj$holdout[2,],ro_obj$mean[2,])
 
 index=6
-ourcall<-"forecast(auto.arima(x=data), h=h)"
-ourValue<-"mean"
-ro_denemee <- ro(ts(product_data_xts$sold_count,frequency = 7), h=2, origins=(nrow(product_data_xts)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
-plot(ro_denemee)
-accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
-accuracy_MAE[index] <- MAE(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+ourCall<-"forecast(auto.arima(x=data), h=h)"
+ro_obj <- ro(ourTs, h=2, origins=ourOrigins, call=ourCall, value=ourValue, ci=FALSE, co=TRUE, parallel=TRUE)
+plot(ro_obj, main = paste0("Rolling Origin - ", method_names[index]))
+ro_MAPE[index] <- MAPE(ro_obj$holdout[2,],ro_obj$mean[2,])
+ro_MAE[index] <- MAE(ro_obj$holdout[2,],ro_obj$mean[2,])
 
 index=7
-ourcall<-"forecast(tbats(y=data), h=h)"
-ourValue<-"mean"
-ro_denemee <- ro(ts(product_data_xts$sold_count,frequency = 7), h=2, origins=(nrow(product_data_xts)*0.15), call=ourcall, value=ourValue, ci=FALSE, co=TRUE)
-plot(ro_denemee)
-accuracy_MAPE[index] <- mape(ro_denemee$holdout[2,],ro_denemee$mean[2,])
-accuracy_MAE[index] <- MAE(ro_denemee$holdout[2,],ro_denemee$mean[2,])
+ourCall<-"forecast(tbats(y=data), h=h)"
+ro_obj <- ro(ourTs, h=2, origins=ourOrigins, call=ourCall, value=ourValue, ci=FALSE, co=TRUE, parallel=TRUE)
+plot(ro_obj, main = paste0("Rolling Origin - ", method_names[index]))
+ro_MAPE[index] <- MAPE(ro_obj$holdout[2,],ro_obj$mean[2,])
+ro_MAE[index] <- MAE(ro_obj$holdout[2,],ro_obj$mean[2,])
 
-results_rolling_origin <- as.data.frame(cbind(accuracy_MAPE,accuracy_MAE))
-row.names(results_rolling_origin) <- method_names
+results <- as.data.frame(cbind(results, ro_MAPE,ro_MAE))
 print("Rolling Origin Done!")
