@@ -105,5 +105,14 @@ check_format <- function(predictions){
     print("Wrong format. Please provide data.frame or data.table object")
     return(FALSE)
   }
-  
+}
+
+# API Connection
+# If data is updated in last 60 minutes, it uses offline data.
+if (exists("data_last_updated_at")) {
+  is_data_old = difftime(Sys.time(), data_last_updated_at) > 60 * 60
+} else {is_data_old = TRUE}
+if (is_data_old) {
+  token = get_token(username = username,password = password,url = subm_url)
+  data_dt = get_data(token = token, url = subm_url)
 }
