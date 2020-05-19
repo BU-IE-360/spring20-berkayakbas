@@ -4,8 +4,8 @@ source("functions.R")
 source("inputs.R")
 
 product_names_dt = data.table(read.csv("API Products.csv", sep = ';'))
-date_annotation_dt= data.table(sapply(read.csv('date_annotation.csv'), as.Date))
-data_dt[,"is_lock_down"] = as.numeric(data_dt$event_date %in% date_annotation_dt$lock_down_dates)
+# date_annotation_dt= data.table(sapply(read.csv('date_annotation.csv'), as.Date))
+# data_dt[,"is_lock_down"] = as.numeric(data_dt$event_date %in% date_annotation_dt$lock_down_dates)
 
 # Product Analysis
 product_ids = unique(data_dt$product_content_id)
@@ -19,6 +19,8 @@ print(paste0("Product ID: ", product_id))
 print(paste0("Product Name: ", product_names_dt[product_content_id == product_id]$bottom_hierarchy))
 source("product_forecasts.R")
 source("rolling_origin.R")
+
+View(results)
 
 # Initialize Predictions
 predictions=unique(data_dt[,list(product_content_id)])
