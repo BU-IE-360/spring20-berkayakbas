@@ -395,6 +395,19 @@ get_product_forecasts(product_data, test_period=1)
 print(paste0("Product ID:", product_id))
 print(paste0("Product Name: ", product_names[product_content_id == product_id]$bottom_hierarchy))
 
+#Auto Arima with external regressors
+data_ts<-ts(product_data$sold_count,freq=7)
+lambda=BoxCox.lambda(data_ts)
+model = auto.arima(data_ts, xreg = cbind(product_data$price,
+                                         product_data$lag7_sold_count,product_data$lag1_sold_count,
+                                         product_data$is_after_corona,product_data$lag28_sold_count), lambda = lambda)
+xreg_new<-cbind(c(44.97,44.99),c(218,190),c(264,473),
+                c(1,1),c(1400,1098))
+colnames(xreg_new)<-c("price","lag7_sold_count","lag1_sold_count","is_after_corona","lag28_sold_count")
+forecast <- as.numeric(forecast(model, xreg = xreg_new, h = 2)$mean[2])
+checkresiduals(model)
+accuracy(model)
+
 # Set Product Prediction
 predictions[product_content_id == product_id]$forecast = 0
 predictions
