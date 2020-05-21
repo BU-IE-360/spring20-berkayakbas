@@ -28,7 +28,7 @@ predictions=unique(data_dt[,list(product_content_id)])
 predictions[,forecast:=0]
 # Set Product Prediction
 predictions[product_content_id == product_id]$forecast = 85
-predictions
+View(predictions)
 
 # Send Submission
 # send_submission(predictions, token, url=subm_url, submit_now=F)

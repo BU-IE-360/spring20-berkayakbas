@@ -246,26 +246,31 @@ print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(
 lines(preds_1, col = "red")
 
 # Stepwise Regression
-null=lm(sold_count ~ 1, data=product_data_xts)
-full=lm(sold_count ~ ., data=product_data_xts)
+product_data_regression_xts = product_data_regression_xts
+product_data_regression_xts$is_after_corona = as.factor(product_data_regression_xts$is_after_corona)
+train_data_regression_xts = train_data_regression_xts
+train_data_regression_xts$is_after_corona = as.factor(train_data_regression_xts$is_after_corona)
+
+null=lm(sold_count ~ 1, data=product_data_regression_xts)
+full=lm(sold_count ~ ., data=product_data_regression_xts)
 backward_lr = step(full, scope=list(lower=null, upper=full), direction="backward", trace = 0)
 forward_lr = step(null, scope=list(lower=null, upper=full), direction="forward", trace = 0)
 
-null_test=lm(sold_count ~ 1, data=train_data_xts)
-full_test=lm(sold_count ~ ., data=train_data_xts)
+null_test=lm(sold_count ~ 1, data=train_data_regression_xts)
+full_test=lm(sold_count ~ ., data=train_data_regression_xts)
 backward_lr_test = step(full, scope=list(lower=null, upper=full), direction="backward", trace = 0)
 forward_lr_test = step(null, scope=list(lower=null, upper=full), direction="forward", trace = 0)
 
 # 9. Stepwise Regression - Backward
 index = 9
-newdata_f<-product_data_xts[(nrow(product_data_xts)-1):nrow(product_data_xts),]
+newdata_f<-product_data_regression_xts[(nrow(product_data_regression_xts)-1):nrow(product_data_regression_xts),]
 index(newdata_f)<-(index(newdata_f)+2)
 preds<-predict(backward_lr, newdata = newdata_f)
 forecast[index] <- preds[2]
 ADJ_R2[index]<-summary(backward_lr)$adj.r.squared
-MAE[index] <-MAE(backward_lr$fitted.values,product_data_xts$sold_count)
-RMSE[index] <- sqrt(MSE(backward_lr$fitted.values,product_data_xts$sold_count))
-MAPE[index] <- MAPE(product_data_xts$sold_count, backward_lr$fitted.values)
+MAE[index] <-MAE(backward_lr$fitted.values,product_data_regression_xts$sold_count)
+RMSE[index] <- sqrt(MSE(backward_lr$fitted.values,product_data_regression_xts$sold_count))
+MAPE[index] <- MAPE(product_data_regression_xts$sold_count, backward_lr$fitted.values)
 
 #9.1 Step Backward -Test
 preds<-predict(backward_lr_test, newdata = testing_for_newdata_xts)
@@ -275,18 +280,18 @@ test_RMSE[index] <- sqrt(MSE(preds,test_data_xts$sold_count))
 test_MAPE[index] <- MAPE(test_data_xts$sold_count, preds)
 
 preds_1<- xts(preds, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
-print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
+print(plot(c(train_data_regression_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
 lines(preds_1, col = "red")
 # 10. Stepwise Regression - Forward
 index = 10
-newdata_f<-product_data_xts[(nrow(product_data_xts)-1):nrow(product_data_xts),]
+newdata_f<-product_data_regression_xts[(nrow(product_data_regression_xts)-1):nrow(product_data_regression_xts),]
 index(newdata_f)<-(index(newdata_f)+2)
 preds<-predict(forward_lr, newdata = newdata_f)
 forecast[index] <- preds[2]
 ADJ_R2[index]<-summary(forward_lr)$adj.r.squared
-MAE[index] <-MAE(forward_lr$fitted.values,product_data_xts$sold_count)
-RMSE[index] <- sqrt(MSE(forward_lr$fitted.values,product_data_xts$sold_count))
-MAPE[index] <- MAPE(product_data_xts$sold_count, forward_lr$fitted.values)
+MAE[index] <-MAE(forward_lr$fitted.values,product_data_regression_xts$sold_count)
+RMSE[index] <- sqrt(MSE(forward_lr$fitted.values,product_data_regression_xts$sold_count))
+MAPE[index] <- MAPE(product_data_regression_xts$sold_count, forward_lr$fitted.values)
 
 #10.1 Step Forward Test
 preds<-predict(forward_lr_test, newdata = testing_for_newdata_xts)
@@ -296,7 +301,7 @@ test_RMSE[index] <- sqrt(MSE(preds,test_data_xts$sold_count))
 test_MAPE[index] <- MAPE(test_data_xts$sold_count, preds)
 
 preds_1<- xts(preds, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
-print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
+print(plot(c(train_data_regression_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
 lines(preds_1, col = "red")
 
 columns = cbind(forecast, ADJ_R2,MAE, MAPE, MASE, test_ADJ_R2, test_MAE, test_MAPE, test_MASE)
