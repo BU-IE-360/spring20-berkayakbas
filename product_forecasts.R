@@ -246,9 +246,9 @@ print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(
 lines(preds_1, col = "red")
 
 # Stepwise Regression
-product_data_regression_xts = product_data_regression_xts
+product_data_regression_xts = product_data_xts
 product_data_regression_xts$is_after_corona = as.factor(product_data_regression_xts$is_after_corona)
-train_data_regression_xts = train_data_regression_xts
+train_data_regression_xts = train_data_xts
 train_data_regression_xts$is_after_corona = as.factor(train_data_regression_xts$is_after_corona)
 
 null=lm(sold_count ~ 1, data=product_data_regression_xts)
