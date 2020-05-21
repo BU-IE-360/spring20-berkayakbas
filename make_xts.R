@@ -27,7 +27,7 @@ x1 <- (length(data_seq) - length(data_seq1))
 product_data_dt <- product_data_dt[(x1 + 1):length(data_seq),]
 product_data_dt$event_date <- NULL
 product_data_dt$product_content_id <- NULL
-product_data_dt <- data.frame(sapply(product_data_dt, as.numeric))
+product_data_dt <- data.table(sapply(product_data_dt, as.numeric))
 # product_data$is_after_corona = as.factor(product_data$is_after_corona)
 # product_data$is_lock_down = as.factor(product_data$is_lock_down)
 product_data_dt[is.na(product_data_dt)] <- 0
