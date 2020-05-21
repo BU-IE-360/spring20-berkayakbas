@@ -17,6 +17,7 @@ product_data_xts=tail(product_data_xts,filter_last_n_days)
 print(paste0("Last event date: ", tail(data_dt, 1)$event_date))
 print(paste0("Product ID: ", product_id))
 print(paste0("Product Name: ", product_names_dt[product_content_id == product_id]$bottom_hierarchy))
+browseURL(toString(product_names_dt[product_content_id == product_id]$url))
 source("product_forecasts.R")
 source("rolling_origin.R")
 
@@ -26,7 +27,7 @@ View(results)
 predictions=unique(data_dt[,list(product_content_id)])
 predictions[,forecast:=0]
 # Set Product Prediction
-predictions[product_content_id == product_id]$forecast = 0
+predictions[product_content_id == product_id]$forecast = 85
 predictions
 
 # Send Submission
