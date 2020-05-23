@@ -11,10 +11,10 @@ method_names = c(
   'Stepwise Backward',
   'Stepwise Forward'
 )
-low_85 <- rep(NA, length(method_names))
+low_80 <- rep(NA, length(method_names))
 low_95 <- rep(NA, length(method_names))
 forecast <- rep(NA, length(method_names))
-high_85 <- rep(NA, length(method_names))
+high_80 <- rep(NA, length(method_names))
 high_95 <- rep(NA, length(method_names))
 ADJ_R2<- rep(NA, length(method_names))
 ME <- rep(NA, length(method_names))
@@ -99,10 +99,10 @@ lines(preds_1, col = "red")
 index = 3
 model = HoltWinters(ts(product_data_xts$sold_count , frequency = 7)[, ], seasonal = "additive")
 fr = forecast(model, h = 2)
-low_85[index] <- fr$lower[2, 1]
+low_80[index] <- fr$lower[2, 1]
 low_95[index] <- fr$lower[2, 2]
 forecast[index] <- fr$mean[2]
-high_85[index] <- fr$upper[2, 1]
+high_80[index] <- fr$upper[2, 1]
 high_95[index] <- fr$upper[2, 2]
 accuracy = accuracy(forecast(model, h=2))
 ME[index] <- accuracy[, 'ME']
@@ -132,10 +132,10 @@ if (sum(ts(product_data_xts$sold_count , frequency = 7)[, 1] == 0) == 0) {
   
   model = HoltWinters(ts(product_data_xts$sold_count , frequency = 7)[, ], seasonal = "multiplicative")
   fr = forecast(model, h = 2)
-  low_85[index] <- fr$lower[2, 1]
+  low_80[index] <- fr$lower[2, 1]
   low_95[index] <- fr$lower[2, 2]
   forecast[index] <- fr$mean[2]
-  high_85[index] <- fr$upper[2, 1]
+  high_80[index] <- fr$upper[2, 1]
   high_95[index] <- fr$upper[2, 2]
   accuracy = accuracy(forecast(model, h=2))
   ME[index] <- accuracy[, 'ME']
@@ -164,10 +164,10 @@ if (sum(ts(product_data_xts$sold_count , frequency = 7)[, 1] == 0) == 0) {
 index = 5
 model = ses(product_data_xts$sold_count, h = 2)
 fr = forecast(model, h = 2)
-low_85[index] <- fr$lower[2, 1]
+low_80[index] <- fr$lower[2, 1]
 low_95[index] <- fr$lower[2, 2]
 forecast[index] <- fr$mean[2]
-high_85[index] <- fr$upper[2, 1]
+high_80[index] <- fr$upper[2, 1]
 high_95[index] <- fr$upper[2, 2]
 accuracy = accuracy(model)
 ME[index] <- accuracy[, 'ME']
@@ -195,10 +195,10 @@ lines(preds_1, col = "red")
 index = 6
 model = auto.arima(product_data_xts$sold_count)
 fr = forecast(model, h = 2)
-low_85[index] <- fr$lower[2, 1]
+low_80[index] <- fr$lower[2, 1]
 low_95[index] <- fr$lower[2, 2]
 forecast[index] <- fr$mean[2]
-high_85[index] <- fr$upper[2, 1]
+high_80[index] <- fr$upper[2, 1]
 high_95[index] <- fr$upper[2, 2]
 accuracy = accuracy(model)
 ME[index] <- accuracy[, 'ME']
@@ -225,10 +225,10 @@ lines(preds_1, col = "red")
 index = 7
 model = tbats(ts(product_data_xts$sold_count))
 fr = forecast(model, h = 2)
-low_85[index] <- fr$lower[2, 1]
+low_80[index] <- fr$lower[2, 1]
 low_95[index] <- fr$lower[2, 2]
 forecast[index] <- fr$mean[2]
-high_85[index] <- fr$upper[2, 1]
+high_80[index] <- fr$upper[2, 1]
 high_95[index] <- fr$upper[2, 2]
 accuracy = accuracy(model)
 ME[index] <- accuracy[, 'ME']
@@ -334,7 +334,7 @@ preds_1<- xts(preds, order.by= seq(first(index(test_data_xts)),last(index(test_d
 print(plot(c(train_data_regression_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
 lines(preds_1, col = "red")
 
-columns = cbind(low_95, low_85, forecast, high_85, high_95, ADJ_R2,MAE, MAPE, MASE, test_ADJ_R2, test_MAE, test_MAPE, test_MASE)
+columns = cbind(low_95, low_80, forecast, high_80, high_95, ADJ_R2,MAE, MAPE, MASE, test_ADJ_R2, test_MAE, test_MAPE, test_MASE)
 # columns = cbind(forecast, ADJ_R2, ME, RMSE, MAE, MAPE, MASE, 
 #                 ACF1,test_ADJ_R2, test_ME, test_RMSE,
 #                 test_MAE,test_MAPE,test_MASE)
