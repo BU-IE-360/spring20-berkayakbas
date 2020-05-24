@@ -4,7 +4,7 @@ ro_MAE <- rep(NA, length(method_names))
 # Common parameters
 ourValue = "mean"
 ourTs = ts(product_data_xts$sold_count,frequency = 7)
-ourOrigins = nrow(product_data_xts)*0.15
+ourOrigins = nrow(product_data_xts)*0.20
 
 index=1
 ourCall<-"naive(x=data, h=h)"
