@@ -7,6 +7,5 @@ while(forecasted_product_number <= 8){
   source("product_analysis.R")
   forecasted_product_number = forecasted_product_number + 1
   product_results_table_name = paste0('results_', tolower(gsub(' ', '_', product_name)))
-  results = results[order(results$ro_MAPE),]
   assign(product_results_table_name, results)
 }

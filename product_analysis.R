@@ -26,3 +26,4 @@ source("product_forecasts.R")
 source("rolling_origin.R")
 
 results = results[order(results$ro_MAPE),]
+predictions = set_default_prediction(product_id)
