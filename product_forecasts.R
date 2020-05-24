@@ -9,7 +9,8 @@ method_names = c(
   'TBATS',
   'Linear Regression',
   'Stepwise Backward',
-  'Stepwise Forward'
+  'Stepwise Forward',
+  'Auto Arima (lambda=auto)'
 )
 low_80 <- rep(NA, length(method_names))
 low_95 <- rep(NA, length(method_names))
@@ -331,6 +332,35 @@ test_MAPE[index] <- MAPE(test_data_xts$sold_count, preds)
 
 preds_1<- xts(preds, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_regression_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
+print(lines(preds_1, col = "red"))
+
+# 11. Auto Arima with Auto Transformation
+index = 11
+model = auto.arima(product_data_xts$sold_count, lambda = 'auto')
+fr = forecast(model, h = 2)
+low_80[index] <- fr$lower[2, 1]
+low_95[index] <- fr$lower[2, 2]
+forecast[index] <- fr$mean[2]
+high_80[index] <- fr$upper[2, 1]
+high_95[index] <- fr$upper[2, 2]
+accuracy = accuracy(model)
+ME[index] <- accuracy[, 'ME']
+RMSE[index] <- accuracy[, 'RMSE']
+MAE[index] <- accuracy[, 'MAE']
+MAPE[index] <- accuracy[, 'MAPE']
+MASE[index] <- accuracy[, 'MASE']
+ACF1[index] <- accuracy[, 'ACF1']
+
+# 11.1 Auto Arima with Auto Transformation Testing
+model=auto.arima(train_data_xts$sold_count, lambda = 'auto')
+accuracy=accuracy(forecast(model, h = nrow(test_data_xts)), test_data_xts$sold_count)
+test_ME[index] <- accuracy["Test set", 'ME']
+test_RMSE[index] <- accuracy["Test set", 'RMSE']
+test_MAE[index] <- accuracy["Test set", 'MAE']
+test_MAPE[index] <- accuracy["Test set", 'MAPE']
+test_MASE[index] <- accuracy["Test set", 'MASE']
+preds_1<- xts(forecast(model, h = nrow(test_data_xts))$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
+print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
 print(lines(preds_1, col = "red"))
 
 columns = cbind(low_95, low_80, forecast, high_80, high_95, ADJ_R2,MAE, MAPE, MASE, test_ADJ_R2, test_MAE, test_MAPE, test_MASE)
