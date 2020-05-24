@@ -10,11 +10,13 @@ get_token <- function(username, password, url_site){
   post_body = list(username=username,password=password)
   post_url_string = paste0(url_site,'/token/')
   result = POST(post_url_string, body = post_body)
-  
   # error handling (wrong credentials)
   if(result$status_code==400){
     print('Check your credentials')
     return(0)
+  }
+  else if (result$status_code==429){
+    print('Too many requests! Token cannot received!')
   }
   else if (result$status_code==201){
     output = content(result)
