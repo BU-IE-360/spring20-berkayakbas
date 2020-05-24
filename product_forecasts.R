@@ -68,7 +68,7 @@ test_MASE[index] <- accuracy["Test set", 'MASE']
 
 preds_1<- xts(model$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 
 # 2. Mean Forecast
 index = 2
@@ -93,7 +93,7 @@ test_MASE[index] <- accuracy["Test set", 'MASE']
 
 preds_1<- xts(model$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 
 # 3. Holt Winters Additive
 index = 3
@@ -124,7 +124,7 @@ test_MASE[index] <- accuracy["Test set", 'MASE']
 
 preds_1<- xts(forecast(model, h=nrow(test_data_xts))$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 
 # 4. Holt Winters Multiplicative
 index=4
@@ -155,7 +155,7 @@ if (sum(ts(product_data_xts$sold_count , frequency = 7)[, 1] == 0) == 0) {
   test_MASE[index] <- accuracy["Test set", 'MASE']
   preds_1<- xts(forecast(model, h=nrow(test_data_xts))$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
   print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-  lines(preds_1, col = "red")
+  print(lines(preds_1, col = "red"))
 }else {
   forecast[4] <- NA
 }
@@ -189,7 +189,7 @@ test_MASE[index] <- accuracy["Test set", 'MASE']
 
 preds_1<- xts(model$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 
 # 6. Auto Arima
 index = 6
@@ -219,7 +219,7 @@ test_MAPE[index] <- accuracy["Test set", 'MAPE']
 test_MASE[index] <- accuracy["Test set", 'MASE']
 preds_1<- xts(forecast(model, h = nrow(test_data_xts))$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 
 # 7. TBATS
 index = 7
@@ -239,7 +239,6 @@ MASE[index] <- accuracy[, 'MASE']
 ACF1[index] <- accuracy[, 'ACF1']
 
 #7.1 TBATS Testing
-
 model=tbats(ts(train_data_xts$sold_count))
 accuracy=accuracy(forecast(model, h = nrow(test_data_xts)), test_data_xts$sold_count)
 test_ME[index] <- accuracy["Test set", 'ME']
@@ -249,7 +248,7 @@ test_MAPE[index] <- accuracy["Test set", 'MAPE']
 test_MASE[index] <- accuracy["Test set", 'MASE']
 preds_1<- xts(forecast(model, h = nrow(test_data_xts))$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 
 # 8. Linear Regression
 index= 8
@@ -273,7 +272,7 @@ test_MAPE[index] <- MAPE(test_data_xts$sold_count, preds)
 
 preds_1<- xts(preds, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 
 # Stepwise Regression
 product_data_regression_xts = product_data_xts
@@ -311,7 +310,7 @@ test_MAPE[index] <- MAPE(test_data_xts$sold_count, preds)
 
 preds_1<- xts(preds, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_regression_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 # 10. Stepwise Regression - Forward
 index = 10
 newdata_f<-product_data_regression_xts[(nrow(product_data_regression_xts)-1):nrow(product_data_regression_xts),]
@@ -332,7 +331,7 @@ test_MAPE[index] <- MAPE(test_data_xts$sold_count, preds)
 
 preds_1<- xts(preds, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_regression_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
-lines(preds_1, col = "red")
+print(lines(preds_1, col = "red"))
 
 columns = cbind(low_95, low_80, forecast, high_80, high_95, ADJ_R2,MAE, MAPE, MASE, test_ADJ_R2, test_MAE, test_MAPE, test_MASE)
 # columns = cbind(forecast, ADJ_R2, ME, RMSE, MAE, MAPE, MASE, 
