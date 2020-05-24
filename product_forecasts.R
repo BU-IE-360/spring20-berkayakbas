@@ -10,7 +10,8 @@ method_names = c(
   'Linear Regression',
   'Stepwise Backward',
   'Stepwise Forward',
-  'Auto Arima (lambda=auto)'
+  'Auto Arima (lambda=auto)',
+  'Neural Network (lambda=auto)'
 )
 low_80 <- rep(NA, length(method_names))
 low_95 <- rep(NA, length(method_names))
@@ -353,6 +354,31 @@ ACF1[index] <- accuracy[, 'ACF1']
 
 # 11.1 Auto Arima with Auto Transformation Testing
 model=auto.arima(train_data_xts$sold_count, lambda = 'auto')
+accuracy=accuracy(forecast(model, h = nrow(test_data_xts)), test_data_xts$sold_count)
+test_ME[index] <- accuracy["Test set", 'ME']
+test_RMSE[index] <- accuracy["Test set", 'RMSE']
+test_MAE[index] <- accuracy["Test set", 'MAE']
+test_MAPE[index] <- accuracy["Test set", 'MAPE']
+test_MASE[index] <- accuracy["Test set", 'MASE']
+preds_1<- xts(forecast(model, h = nrow(test_data_xts))$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
+print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
+print(lines(preds_1, col = "red"))
+
+# 12. Neural Network
+index = 12
+model = nnetar(product_data_xts$sold_count, lambda = 'auto')
+fr = forecast(model, h = 2)
+forecast[index] <- fr$mean[2]
+accuracy = accuracy(model)
+ME[index] <- accuracy[, 'ME']
+RMSE[index] <- accuracy[, 'RMSE']
+MAE[index] <- accuracy[, 'MAE']
+MAPE[index] <- accuracy[, 'MAPE']
+MASE[index] <- accuracy[, 'MASE']
+ACF1[index] <- accuracy[, 'ACF1']
+
+# 12.1 Neural Network Testing
+model= nnetar(train_data_xts$sold_count, lambda = 'auto')
 accuracy=accuracy(forecast(model, h = nrow(test_data_xts)), test_data_xts$sold_count)
 test_ME[index] <- accuracy["Test set", 'ME']
 test_RMSE[index] <- accuracy["Test set", 'RMSE']
