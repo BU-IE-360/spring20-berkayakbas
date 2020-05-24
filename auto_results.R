@@ -1,11 +1,12 @@
-forecasted_product_number = 1
-filter_last_n_days = 135
-test_period = 1
-
-# Comment source("inputs.R") in "main3.R" before run
+source("api_connection.R")
+source("requirements.R")
+source("functions.R")
+source("inputs.R")
 
 while(forecasted_product_number <= 8){
-  source("main3.R")
+  source("product_analysis.R")
   forecasted_product_number = forecasted_product_number + 1
-  assign(paste0('results_', tolower(gsub(' ', '_', product_name))), results)
+  product_results_table_name = paste0('results_', tolower(gsub(' ', '_', product_name)))
+  results = results[order(results$ro_MAPE),]
+  assign(product_results_table_name, results)
 }
