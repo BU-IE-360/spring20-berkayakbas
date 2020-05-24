@@ -15,6 +15,7 @@ product_data_dt = data_dt[product_content_id == product_id]
 if (product_id == 31515569){
   product_data_dt[event_date == as.Date('2020-05-17'),] = product_data_dt[event_date == as.Date('2020-05-16'),]
 }
+# Fix Islak Mendil data for unexpected sold count
 if (product_id == 4066298){
   product_data_dt[event_date == as.Date('2020-05-21'),] = product_data_dt[event_date == as.Date('2020-05-22'),]
 }
@@ -33,15 +34,9 @@ results = results[order(results$ro_MAPE),]
 View(results)
 
 # Initialize Predictions
-if (!exists("predictions")) {
-  predictions = unique(data_dt[, list(product_content_id)])
-  predictions[, forecast := 0]
-  print("Predictions are initialized")
-}
-
+predictions = initialize_predictions()
 # Set Product Prediction
-predictions[product_content_id == product_id]$forecast = 0
-print(predictions)
+predictions = set_prediction(product_id = product_id, prediction = 5)
 
 # Send Submission
 # send_submission(predictions, token, url=subm_url, submit_now=F)
