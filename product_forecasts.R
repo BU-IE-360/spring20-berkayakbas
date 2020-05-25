@@ -225,7 +225,7 @@ print(lines(preds_1, col = "red"))
 
 # 7. TBATS
 index = 7
-model = tbats(ts(product_data_xts$sold_count))
+model = tbats(ts(product_data_xts$sold_count), use.parallel = parallel_processing_on)
 fr = forecast(model, h = 2)
 low_80[index] <- fr$lower[2, 1]
 low_95[index] <- fr$lower[2, 2]
@@ -241,7 +241,7 @@ MASE[index] <- accuracy[, 'MASE']
 ACF1[index] <- accuracy[, 'ACF1']
 
 #7.1 TBATS Testing
-model=tbats(ts(train_data_xts$sold_count))
+model=tbats(ts(train_data_xts$sold_count), use.parallel = parallel_processing_on)
 accuracy=accuracy(forecast(model, h = nrow(test_data_xts)), test_data_xts$sold_count)
 test_ME[index] <- accuracy["Test set", 'ME']
 test_RMSE[index] <- accuracy["Test set", 'RMSE']
