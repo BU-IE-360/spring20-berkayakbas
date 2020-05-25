@@ -11,7 +11,8 @@ method_names = c(
   'Stepwise Backward',
   'Stepwise Forward',
   'Auto Arima (lambda=auto)',
-  'Neural Network (lambda=auto)'
+  'Neural Network (lambda=auto)',
+  'Exponential Smoothing (lambda=auto)'
 )
 low_80 <- rep(NA, length(method_names))
 low_95 <- rep(NA, length(method_names))
@@ -180,7 +181,6 @@ MASE[index] <- accuracy[, 'MASE']
 ACF1[index] <- accuracy[, 'ACF1']
 
 #5.1 Exp Smt Testing
-
 model=ses(train_data_xts$sold_count, h = nrow(test_data_xts))
 accuracy=accuracy(model, test_data_xts$sold_count)
 test_ME[index] <- accuracy["Test set", 'ME']
@@ -211,7 +211,6 @@ MASE[index] <- accuracy[, 'MASE']
 ACF1[index] <- accuracy[, 'ACF1']
 
 # 6.1 Auto Arima Testing
-
 model=auto.arima(train_data_xts$sold_count)
 accuracy=accuracy(forecast(model, h = nrow(test_data_xts)), test_data_xts$sold_count)
 test_ME[index] <- accuracy["Test set", 'ME']
@@ -313,6 +312,7 @@ test_MAPE[index] <- MAPE(test_data_xts$sold_count, preds)
 preds_1<- xts(preds, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
 print(plot(c(train_data_regression_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
 print(lines(preds_1, col = "red"))
+
 # 10. Stepwise Regression - Forward
 index = 10
 newdata_f<-product_data_regression_xts[(nrow(product_data_regression_xts)-1):nrow(product_data_regression_xts),]
@@ -389,10 +389,40 @@ preds_1<- xts(forecast(model, h = nrow(test_data_xts))$mean, order.by= seq(first
 print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
 print(lines(preds_1, col = "red"))
 
+# 13. Exponential Smoothing - Auto Transformation
+index = 13
+model = ses(product_data_xts$sold_count, h = 2, lambda = 'auto')
+fr = forecast(model, h = 2)
+low_80[index] <- fr$lower[2, 1]
+low_95[index] <- fr$lower[2, 2]
+forecast[index] <- fr$mean[2]
+high_80[index] <- fr$upper[2, 1]
+high_95[index] <- fr$upper[2, 2]
+accuracy = accuracy(model)
+ME[index] <- accuracy[, 'ME']
+RMSE[index] <- accuracy[, 'RMSE']
+MAE[index] <- accuracy[, 'MAE']
+MAPE[index] <- accuracy[, 'MAPE']
+MASE[index] <- accuracy[, 'MASE']
+ACF1[index] <- accuracy[, 'ACF1']
+
+# 13.1 Exponential Smoothing - Auto Transformation Testing
+model=ses(train_data_xts$sold_count, h = nrow(test_data_xts), lambda = 'auto')
+accuracy=accuracy(model, test_data_xts$sold_count)
+test_ME[index] <- accuracy["Test set", 'ME']
+test_RMSE[index] <- accuracy["Test set", 'RMSE']
+test_MAE[index] <- accuracy["Test set", 'MAE']
+test_MAPE[index] <- accuracy["Test set", 'MAPE']
+test_MASE[index] <- accuracy["Test set", 'MASE']
+preds_1<- xts(model$mean, order.by= seq(first(index(test_data_xts)),last(index(test_data_xts)), by="days"))
+print(plot(c(train_data_xts$sold_count,test_data_xts$sold_count), main = paste0(method_names[index])))
+print(lines(preds_1, col = "red"))
+
 columns = cbind(low_95, low_80, forecast, high_80, high_95, ADJ_R2,MAE, MAPE, MASE, test_ADJ_R2, test_MAE, test_MAPE, test_MASE)
 # columns = cbind(forecast, ADJ_R2, ME, RMSE, MAE, MAPE, MASE, 
 #                 ACF1,test_ADJ_R2, test_ME, test_RMSE,
 #                 test_MAE,test_MAPE,test_MASE)
+
 results <- as.data.frame(columns)
 row.names(results) <- method_names
 print("Product Forecasts Done!")
