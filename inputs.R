@@ -1,4 +1,4 @@
-forecasted_product_number = 1
-filter_last_n_days = 135
-test_period = 1
+forecasted_product_number = 8
+filter_last_n_days = as.numeric(as.Date(Sys.time()) - as.Date('2020-03-11'))
+test_period = 2
 parallel_processing_on = TRUE
