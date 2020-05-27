@@ -33,3 +33,17 @@ set_default_prediction = function(product_id){
     set_prediction(product_id, round(prediction))
   }
 }
+
+mape_quantile = function (actual, forecast) 
+{
+  if (length(actual) != length(forecast)) {
+    message("The length of the provided data differs.")
+    message(paste0("Length of actual: ", length(actual)))
+    message(paste0("Length of forecast: ", length(forecast)))
+    stop("Cannot proceed.", call. = FALSE)
+  }
+  else {
+    p = quantile(abs((actual - forecast)/actual), na.rm = TRUE, probs = seq(0, 1, 0.25))
+    return(c(p))
+  }
+}
