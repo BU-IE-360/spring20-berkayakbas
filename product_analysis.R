@@ -1,4 +1,4 @@
-product_names_dt = data.table(read.csv("API Products.csv", sep = ';'))
+product_names_dt = fread("API Products.csv")
 # date_annotation_dt= data.table(sapply(read.csv('date_annotation.csv'), as.Date))
 # data_dt[,"is_lock_down"] = as.numeric(data_dt$event_date %in% date_annotation_dt$lock_down_dates)
 
@@ -6,7 +6,8 @@ product_names_dt = data.table(read.csv("API Products.csv", sep = ';'))
 product_ids = unique(data_dt$product_content_id)
 product_id = product_ids[forecasted_product_number]
 product_data_dt = data_dt[product_content_id == product_id]
-# Fix tayt data for stock-out day
+# Fix data for all products
+product_data_dt[event_date == as.Date('2020-06-01'),] = product_data_dt[event_date == as.Date('2020-05-31'),]
 if (product_id == 31515569){
   product_data_dt[event_date == as.Date('2020-05-17'),] = product_data_dt[event_date == as.Date('2020-05-16'),]
 }
@@ -21,7 +22,7 @@ print(paste0("Last event date: ", tail(data_dt, 1)$event_date))
 print(paste0("Product ID: ", product_id))
 product_name = product_names_dt[product_content_id == product_id]$bottom_hierarchy
 print(paste0("Product Name: ", product_name))
-browseURL(toString(product_names_dt[product_content_id == product_id]$url))
+# browseURL(toString(product_names_dt[product_content_id == product_id]$url))
 source("product_forecasts.R")
 source("rolling_origin.R")
 
