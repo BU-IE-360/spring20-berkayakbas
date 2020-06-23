@@ -8,6 +8,7 @@ product_id = product_ids[forecasted_product_number]
 product_data_dt = data_dt[product_content_id == product_id]
 # Fix data for all products
 product_data_dt[event_date == as.Date('2020-06-01'),] = product_data_dt[event_date == as.Date('2020-05-31'),]
+product_data_dt[event_date == as.Date('2020-06-11'),] = product_data_dt[event_date == as.Date('2020-06-10'),]
 if (product_id == 31515569){
   product_data_dt[event_date == as.Date('2020-05-17'),] = product_data_dt[event_date == as.Date('2020-05-16'),]
 }
