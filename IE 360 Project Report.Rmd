@@ -1,0 +1,31 @@
+---
+title: "IE 360"
+author: "Group1"
+date: "22 06 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Forecasting the sales quantity of a product is important for online retails, they must take their decisions based on the forecasts and the forecast accuracy becomes important to minimize any stockouts and also the inventory holding cost. With the vast amount of data available for the e-commerce companies, forecasting the sales becomes an important task for the companies.
+
+\ In the project, our main task is to forecast eight different products of Trendyol in a daily basis. This forecast is done every day and it is done nearly for almost 30 days. The forecast is done for tomorrow given the sales data up until yesterday.
+
+\ Our project data was very detailed, it was consisting of different features which are event_date, product_content_id, sold_count, visit_count, favored_count, basket_count, category_sold, category_brand_sold, category_visits, ty_visits and price. The earliest date was from one year before and it was updated each day by adding the new day's information. Sold count is the variable that we wanted to forecast for tomorrow for each product.
+
+\ We prepared the data by removing NA values, removing some columns such as event_date and product_content_id, adding some features such as is_corona which describes if the date of the sales is after the first case of corona or not and some lagged sold_count variables such as lag_1, lag_7, lag_28 and lag_365. We then transformed the data into xts and grouped the data by 8, which are the products.
+
+\ Our main approach to the problem can be summarized as; we first analyzed the data and after preparing the data, by using forecasting methods, we had come up with the different results. By using different evaluation criteria such as fixed origin and rolling origin, and by determining the interval of data to train the forecast, we had come up with a solution for the project. We have also used information from Trendyol's website such as stock or price and we used our insight's such as the lifting of quarantine measures (June 1), special days(bayram) and weather forecast to gain insight and forecast more accurately.
+
+
+## Related Literature
+
+The course materials, and the lectures from datacamp are used extensively in developing an approach to the project. Other than that, we made literature search 
+
+You can find the related articles in reference.
