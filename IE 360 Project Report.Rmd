@@ -33,3 +33,25 @@ In the article "Sales Forecasting for Fashion Retailing Service Industry: A Revi
 We have also used Rob Hyndman's "Forecasting: Principles and Practice". In this book, lots of different forecasting methods are discussed and we have used most of the methods there and evaluated them with each other to be more accurate in sales predictions.
 
 You can find the related articles in reference.
+
+
+## Approach
+
+\ In this project, we used different methods which are Naive, Mean, Holt Winters Additive, Holt Winters Multiplicative, Exponential Smoothing, Auto Arima, TBATS, Linear Regression, Backward Stepwise Regression, Forward Stepwise Regression and Neural Network. Linear regression and stepwise regression are regression methods which needs external regressors whereas other methods can just use the sold_count data. We used sold_count data in these methods except for regression models.
+
+\ Naive method is a very basic method which gives but it is important in some cases where it is not possible to predict the direction of change in the next day's sales. Example of this could be Tayt sales, sometimes stockouts happened and large sales differences were present in consecutive days.
+
+\ Mean method was useful in some cases where the variance is small. An example for this could be Süpürge and Yüz Temizleyici sales. In some cases they followed quite similar sales in the last 7 days and by shortening the time period, mean could be useful in sales prediction.
+
+\ Holt Winters methods were added to detect seasonality and to make more accurate predictions. We thought that this approach could detect the weekday-weekend differences and could reflect it in the predictions. We used frequency of 7 days in our time series data, which makes it a weekly data.
+
+\ Exponential Smoothing and Auto Arima methods were used with default lambda and auto lambda, which uses Box-Cox transformation. We wanted to use these methods to diversify our methods with the most basic ones and Auto Arima could add any autoregressive feature of the data.
+
+\ Linear Regression and Stepwise Regression were used to improve the accuracy, but it needed external regressors and because that tomorrow's regressors were not available to us, we used today's features.
+
+\ We used TBATS to detect any complicated seasonal pattern, which was also discussed in the book that we used to develop an approach. You can find it at reference section. Neural Network model was also used with auto lambda. In the book, this was also discussed and we used it to detect any complex non linear relationship in the data.
+
+\ Before applying the methods, we have transformed the data to xts. Also, we have divided the data into 8 product groups. We have removed then the columns event_date and product_content_id. Lastly, we have added lagged sales count features which are lag1_sold_count, lag7_sold_count, lag28_sold_count and lag365_sold_count and we changed the price value where it was -1 with the recent price value.
+
+\ We have used fixed origin and rolling origin to evaluate our forecast's accuracy. In the fixed origin evaluation, we used 2 types: one with the 80-20 percent train and test data ratio. The other was to use all data except the last 2 for train and the last 2 for the test data(today and tomorrow). We also thought that this project should be consistent for almost 30 days, so we used rolling origin approach. In this approach, we used the last 2 data to forecast and it was constant. However we increased the train data one by one. We used this method for the 20 percent of the data. This means we first used 80 percent of the data and divided into train and test data. Then increased the train data one by one up until it covers the whole data except the last 2 data. This can be summarized as increasing input and constant output. By using rolling origin, we aimed to achieve a more consistent forecasting approach.
+
