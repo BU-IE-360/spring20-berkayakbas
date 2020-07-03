@@ -1,7 +1,7 @@
 # Progress Journal
 
 ## Final Project Report
-[Here](files/interesting_examples.html) is our script that is used in order to produce forecasts.
+[Here](spring20-berkayakbas/Scripts.R) is our script that is used in order to produce forecasts.
 Our final report can be accesed from [here](spring20-berkayakbas/IE 360 Project Report.html).
 
 ## Week 0 (February 18th)
