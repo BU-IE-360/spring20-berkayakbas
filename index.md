@@ -1,6 +1,6 @@
 # Progress Journal
 
-## Final Project Report
+## Final Project Report
 [Here](files/interesting_examples.html) is our script that is used in order to produce forecasts.
 Our final report can be accesed from [here](/IE 360 Project Report.html).
 
