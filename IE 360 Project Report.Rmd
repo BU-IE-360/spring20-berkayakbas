@@ -1,10 +1,10 @@
 ---
-title: "IE 360"
+title: "IE 360 - Final Report"
 author: "Group1"
-date: "22 06 2020"
+date: "06.07.2020"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -15,20 +15,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Forecasting the sales quantity of a product is important for online retails, they must take their decisions based on the forecasts and the forecast accuracy becomes important to minimize any stockouts and also the inventory holding cost. With the vast amount of data available for the e-commerce companies, forecasting the sales becomes an important task for the companies.
+Forecasting the sales quantity of a product is important for online retails, they must make their decisions based on the forecasts and the forecast accuracy becomes important to minimize any stockouts and also the inventory holding cost. With the vast amount of data available for the e-commerce companies, forecasting the sales becomes an important task for the companies.
 
-\ In the project, our main task is to forecast eight different products of Trendyol in a daily basis. This forecast is done every day and it is done nearly for almost 30 days. The forecast is done for tomorrow given the sales data up until yesterday.
+In the project, our main task is to forecast eight different products of Trendyol on a daily basis. This forecast is done every day and it is done nearly for almost 30 days. The forecast is done for tomorrow given the sales data up until yesterday.
 
-\ Our project data was very detailed, it was consisting of different features which are event_date, product_content_id, sold_count, visit_count, favored_count, basket_count, category_sold, category_brand_sold, category_visits, ty_visits and price. The earliest date was from one year before and it was updated each day by adding the new day's information. Sold count is the variable that we wanted to forecast for tomorrow for each product.
+Our project data was very detailed, it was consisting of different features which are event_date, product_content_id, sold_count, visit_count, favored_count, basket_count, category_sold, category_brand_sold, category_visits, ty_visits and price. The earliest date was from one year before and it was updated each day by adding the new day's information. The sold count is the variable that we wanted to forecast for tomorrow for each product.
 
-\ We prepared the data by removing NA values, removing some columns such as event_date and product_content_id, adding some features such as is_after_corona which describes if the date of the sales is after the first case of corona or not and some lagged sold_count variables such as lag_1, lag_7, lag_28 and lag_365. We then transformed the data into xts and grouped the data by 8, which are the products.
+We prepared the data by removing NA values, removing some columns such as event_date and product_content_id, adding some features such as is_after_corona which describes if the date of the sales is after the first case of corona or not and some lagged sold_count variables such as lag_1, lag_7, lag_28 and lag_365. We then transformed the data into xts and grouped the data by 8, which are the products.
 
-\ Our main approach to the problem can be summarized as; we first analyzed the data and after preparing the data, by using forecasting methods, we had come up with the different results. By using different evaluation criteria such as fixed origin and rolling origin, and by determining the interval of data to train the forecast, we had come up with a solution for the project. We have also used information from Trendyol's website such as stock or price and we used our insight's such as the lifting of quarantine measures (June 1), special days(bayram) and weather forecast to gain insight and forecast more accurately.
+Our main approach to the problem can be summarized as; we first analyzed the data and after preparing the data, by using forecasting methods, we had come up with different results. By using different evaluation criteria such as fixed origin and rolling origin, and by determining the interval of data to train the forecast, we had come up with a solution for the project. We have also used information from Trendyol's website such as stock or price and we used our insight's such as the lifting of quarantine measures (June 1), special days(bayram) and weather forecast to gain insight and forecast more accurately.
 
 
 ## Related Literature
 
-The course materials, and the lectures from Datacamp are used extensively in developing an approach to the project. Other than that, we made literature search.
+The course materials and the lectures from Datacamp are used extensively in developing an approach to the project. Other than that, we made a literature search.
 
 In the article "Sales Forecasting for Fashion Retailing Service Industry: A Review", it talks about how the forecasts are strongly affected by seasonal factors, fashion trend factor and other tricky variables. We concluded from the article that holidays are very important in determining the sales quantity. We have also concluded that statistical methods can be used for short-term forecasts.
 
@@ -39,61 +39,69 @@ You can find the related articles in reference.
 
 ## Approach
 
-\ In this project, we used different methods which are Naive, Mean, Holt Winters Additive, Holt Winters Multiplicative, Exponential Smoothing, Auto Arima, TBATS, Linear Regression, Backward Stepwise Regression, Forward Stepwise Regression and Neural Network. Linear regression and stepwise regression are regression methods which needs external regressors whereas other methods can just use the sold_count data. We used sold_count data in these methods except for regression models.
+In this project, we used different methods which are Naive, Mean, Holt-Winters Additive, Holt Winters Multiplicative, Exponential Smoothing, Auto Arima, TBATS, Linear Regression, Backward Stepwise Regression, Forward Stepwise Regression and Neural Network. Linear regression and stepwise regression are regression methods that need external regressors whereas other methods can just use the sold_count data. We used sold_count data in these methods except for regression models.
 
-\ Naive method is a very basic method which gives but it is important in some cases where it is not possible to predict the direction of change in the next day's sales. Example of this could be Tayt sales, sometimes stockouts happened and large sales differences were present in consecutive days.
+Naive method is a very basic method which gives but it is important in some cases, where it is not possible to predict the direction of change in the next day's sales. An example of this could be Tayt sales, sometimes stockouts happened and large sales differences were present in consecutive days.
 
-\ Mean method was useful in some cases where the variance is small. An example for this could be Süpürge and Yüz Temizleyici sales. In some cases they followed quite similar sales in the last 7 days and by shortening the time period, mean could be useful in sales prediction.
+Mean method was useful in some cases where the variance is small. An example of this could be Süpürge and Yüz Temizleyici sales. In some cases they followed quite similar sales in the last 7 days and by shortening the time period, mean could be useful in sales prediction.
 
-\ Holt Winters methods were added to detect seasonality and to make more accurate predictions. We thought that this approach could detect the weekday-weekend differences and could reflect it in the predictions. We used frequency of 7 days in our time series data, which makes it a weekly data.
+Holt-Winters methods were added to detect seasonality and to make more accurate predictions. We thought that this approach could detect the weekday-weekend differences and could reflect it in the predictions. We used frequency of 7 days in our time-series data, which makes it a weekly data.
 
-\ Exponential Smoothing and Auto Arima methods were used with default lambda and auto lambda, which uses Box-Cox transformation. We wanted to use these methods to diversify our methods with the most basic ones and Auto Arima could add any autoregressive feature of the data.
+Exponential Smoothing and Auto Arima methods were used with default lambda and auto lambda, which uses Box-Cox transformation. We wanted to use these methods to diversify our methods with the most basic ones and Auto Arima could add any autoregressive feature of the data.
 
-\ Linear Regression and Stepwise Regression were used to improve the accuracy, but it needed external regressors and because that tomorrow's regressors were not available to us, we used today's features.
+Linear Regression and Stepwise Regression were used to improve the accuracy, but it needed external regressors and because that tomorrow's regressors were not available to us, we used today's features.
 
-\ We used TBATS to detect any complicated seasonal pattern, which was also discussed in the book that we used to develop an approach. You can find it at reference section. Neural Network model was also used with auto lambda. In the book, this was also discussed and we used it to detect any complex non linear relationship in the data.
+We used TBATS to detect any complicated seasonal pattern, which was also discussed in the book that we used to develop an approach. You can find it in the reference section. Neural Network model was also used with auto lambda. In the book, this was also discussed and we used it to detect any complex non-linear relationship in the data.
 
-\ Before applying the methods, we have transformed the data to xts. Also, we have divided the data into 8 product groups. We have removed then the columns event_date and product_content_id. Lastly, we have added lagged sales count features which are lag1_sold_count, lag7_sold_count, lag28_sold_count and lag365_sold_count and we changed the price value where it was -1 with the recent price value.
+Before applying the methods, we have transformed the data to xts. Also, we have divided the data into 8 product groups. We have removed then the columns event_date and product_content_id. Lastly, we have added lagged sales count features which are lag1_sold_count, lag7_sold_count, lag28_sold_count and lag365_sold_count and we changed the price value where it was -1 with the recent price value.
 
-\ We have used fixed origin and rolling origin to evaluate our forecast's accuracy. In the fixed origin evaluation, we used 2 types: one with the 80-20 percent train and test data ratio. The other was to use all data except the last 2 for train and the last 2 for the test data(today and tomorrow). We also thought that this project should be consistent for almost 30 days, so we used rolling origin approach. In this approach, we used the last 2 data to forecast and it was constant. However we increased the train data one by one. We used this method for the 20 percent of the data. This means we first used 80 percent of the data and divided into train and test data. Then increased the train data one by one up until it covers the whole data except the last 2 data. This can be summarized as increasing input and constant output. By using rolling origin, we aimed to achieve a more consistent forecasting approach.
+We have used fixed origin and rolling origin to evaluate our forecast's accuracy. In the fixed origin evaluation, we used 2 types: one with the 80-20 percent train and test data ratio. The other was to use all data except the last 2 for train and the last 2 for the test data(today and tomorrow). We also thought that this project should be consistent for almost 30 days, so we used rolling origin approach. In this approach, we used the last 2 data to forecast and it was constant. However we increased the train data one by one. We used this method for 20 percent of the data. This means we first used 80 percent of the data and divided it into train and test data. Then increased the train data one by one up until it covers the whole data except the last 2 data. This can be summarized as increasing input and constant output. By using rolling origin, we aimed to achieve a more consistent forecasting approach.
 
-\ In order to select a forecast between the forecasts obtained from the methods above, we have used several different error metrics. Which are Mean Error (ME), Root Mean Square Error (RMSE), Mean Absolute Error (MAE), Mean Absolute Percentage Error (MAPE), Mean Absolute Scaled Error (MASE). We have calculated these metrics for both fixed origin and rolling origin methods. While we are selecting the method, usually we used MAPE & MASE metrics since they are easy to interpret. Also, in general we evaluate the metrics obtained from rolling origin methods since rolling origin produces large amount of data its results are more reliable compared to fixed origin.
+In order to select a forecast between the forecasts obtained from the methods above, we have used several different error metrics. Which are Mean Error (ME), Root Mean Square Error (RMSE), Mean Absolute Error (MAE), Mean Absolute Percentage Error (MAPE), Mean Absolute Scaled Error (MASE). We have calculated these metrics for both fixed origin and rolling origin methods. While we are selecting the method, usually we used MAPE & MASE metrics since they are easy to interpret. Also, in general we evaluate the metrics obtained from rolling origin methods since rolling origin produces a large amount of data its results are more reliable compared to fixed origin.
 
 
 ## Results
 
-\ In our approach we managed to provide better forecasts than naive forecasts in 20 out of 28 (~%72) days. Also, 160 out of 224 (8 products * 28 days) forecasts are better than naive forecasts. It is better to look the results of products one by one.
+In our approach, we managed to provide better forecasts than naive forecasts in 20 out of 28 (~%72) days. Also, 160 out of 224 (8 products * 28 days) forecasts are better than naive forecasts. It is better to look at the results of products one by one.
 
-\ The table below shows some error metrics for the forecasts maden between 16.05.2020 and 12.06.2020 by product. In the table MAE represents Mean Absolute Error, MAPE represents Mean Absolute Percentage Error, MdAPE represents Median Absolute Percentage Error.
+The table below shows some error metrics for the forecasts maden between 16.05.2020 and 12.06.2020 by product. In the table MAE represents Mean Absolute Error, MAPE represents Mean Absolute Percentage Error, MdAPE represents Median Absolute Percentage Error.
 
 ```{r}
 require(data.table)
+require(kableExtra)
 dt = fread("Error Analysis.csv")
-knitr::kable(dt, format="html", align = "lcccc", caption = "Table - Summary of Forecast Errors")
+kableExtra::kable_styling(knitr::kable(dt, format="html", align = "lcccc", caption = "Table - Summary of Forecast Errors", full_width = F))
 ```
 
-\ Firstly, Tayt was the most challenging product during the project. Although its price is nearly constant over time, since its available amount in stock is highly changing over time and we do not have any information about stock producing forecasts was not easy. If we had real time stock information, our forecasts would be much better.
+Firstly, Tayt was the most challenging product during the project. Although its price is nearly constant over time, since its available amount in stock is highly changing over time and we do not have any information about stock producing forecasts was not easy. If we had real time stock information, our forecasts would be much better.
 
-\ Şarj Edilebilir Diş Fırçası have the highest MAPE at the table above which shows that our forecasts were deviate more from the real compared to the other products. Also, "Percent of Forecasts Better Than Naive" metric is very low compared to other products. Main reason of that, prices of the product is changing day to day which highly affects the sales. If we had next days' price before on hand, forecast may be more accurate.
+Şarj Edilebilir Diş Fırçası has the highest MAPE at the table above which shows that our forecasts were deviated more from the real compared to the other products. Also, the "Percent of Forecasts Better Than Naive" metric is very low compared to other products. The main reason for that, prices of the product are changing day to day which highly affects sales. If we had the next days' price before on hand, the forecast may be more accurate.
 
-\ Since Mont is not sold over the time we produce forecasts and our all forecasts are zero there is not any error in our forecasts which is an exceptional case.
+Since Mont is not sold over the time we produce forecasts and our all forecasts are zero there is not an error in our forecasts which is an exceptional case.
 
-\ Bikini Üstü product sales was very low compared to other products. 14 out of 28 days it has no sales. Due to zero sales, MAPE and MdAPE cannot be calculated in the table above. On the other hand since sales volume is very low its contribution to total error was minimal.
+Bikini Üstü product sales were very low compared to other products. 14 out of 28 days it has no sales. Due to zero sales, MAPE and MdAPE cannot be calculated in the table above. On the other hand, since sales volume is very low its contribution to total error was minimal.
 
-\ Telefon Bluetooth Kulaklık was one of the most challenging products to forecast. It has highly changing price which makes forecasting harder.
+Telefon Bluetooth Kulaklık was one of the most challenging products to forecast. It has highly changing price which makes forecasting harder.
 
-\ Süpürge product was an easy to estimate product compared to the others. Its price has little changes overtime which makes sales stable. Also, there wasn't any stock-out problem for this product. Thus, along from a few exceptions our forecasts were very close to the real sales. 16 out of 28 day our forecasts were have an error less than 10.
+Süpürge product was an easy to estimate product compared to the others. Its price has little changes in overtime which make sales stable. Also, there wasn't any stock-out problem for this product. Thus, along with a few exceptions our forecasts were very close to the real sales. 16 out of 28 days our forecasts had an error less than 10.
 
-\ Although priceses for Yüz Temizleyici product change day-to-day, especially in the last period, changes in its sales was very smooth. For this reason we managed to forecast exactly the same as the real sales for 2 days and with error less than 10 for 17 days. 
+Although prices for Yüz Temizleyici product change day-to-day, especially in the last period, changes in its sales were very smooth. For this reason we managed to forecast exactly the same as the real sales for 2 days and with an error less than 10 for 17 days. 
 
 
 ## Conclusion and Future Work
 
-\ To sum up, we have written a script that produces daily forecasts for some of the products that is sold by Trendyol. This script produces forecasts by using 6 different time series forecasting methods and 2 regression methods. While producing the forecasts, it also generates the relevant error metrics and it gives both the forecasts and errors as an output. Although the script automatically selects one of the forecasts accordingly a pre-determined error metric, analyzer have also chance to select a forecast manually. The script can be used for real life purposes in order to predict next day's sales with some improvements.
+To sum up, we have written a script that produces daily forecasts for some of the products that are sold by Trendyol. This script produces forecasts by using 6 different time series forecasting methods and 2 regression methods. While producing the forecasts, it also generates the relevant error metrics and it gives both the forecasts and errors as an output. Although the script automatically selects one of the forecasts accordingly a pre-determined error metric, analyzer has also chance to select a forecast manually. The script can be used for real life purposes in order to predict the next day's sales with some improvements.
 
-\ In order to improve the obtained predictions there exists some simple touches. Firstly, some external data can be used. For example, sales of Tayt product is highly dependent to its available stocks. Thus, adding available stock data to the script as an input will highly improve the results. Also, one can obtain better results if the next days' price (which is known by Trendyol) for the product is known by the analyist.
+In order to improve the obtained predictions there exist some simple touches. Firstly, some external data can be used. For example, sales of Tayt product is highly dependent to its available stocks. Thus, adding available stock data to the script as an input will highly improve the results. Also, one can obtain better results if the next days' price (which is known by Trendyol) for the product is known by the analyst.
 
 
 ## Code
 
-All of the script is available at our git repository which is publicly available. In order to reach our repository please click [here]. (https://github.com/BU-IE-360/spring20-berkayakbas)
+All of the scripts is available at our git repository which is publicly available. In order to reach our repository please click [here](https://github.com/BU-IE-360/spring20-berkayakbas).
+
+
+# References
+
+* [Forecasting: Principles and Practice by Rob J Hyndman and George Athanasopoulos, Monash University, Australia](https://otexts.com/fpp2/accuracy.html) 
+* [Liu, Na, et al. Sales Forecasting for Fashion Retailing Service Industry: A Review, 5 Oct. 2013](http://downloads.hindawi.com/journals/mpe/2013/738675.pdf)
+
