@@ -1,8 +1,0 @@
-To Do List
-
-1. Main dataya is_lock_down eklenecek (categorical variable)
-2. Main dataya özel günler (is_special_day) eklenecek (Black Friday, Anneler Günü, Sevgililer Günü etc.)
-3. Sold count hariç diğer parametreleri time series ile estimate edip, stepwise regression ile tahmin yapmak
-4. Regression yaparken parametrelerin arasında 2 gün fark olacak şekilde model kurulması
-5. Main dataya günlük sıcaklık datası eklenecek. (İstanbul günlük max ve min sıcaklık datası bulsak güzel olur)
-6. transformationlar denenecek

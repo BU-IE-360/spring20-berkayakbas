@@ -1,0 +1,308 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={IE 360},
+            pdfauthor={Group1},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{IE 360}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Group1}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{22 06 2020}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduction}{%
+\subsection{Introduction}\label{introduction}}
+
+Forecasting the sales quantity of a product is important for online
+retails, they must take their decisions based on the forecasts and the
+forecast accuracy becomes important to minimize any stockouts and also
+the inventory holding cost. With the vast amount of data available for
+the e-commerce companies, forecasting the sales becomes an important
+task for the companies.
+
+~In the project, our main task is to forecast eight different products
+of Trendyol in a daily basis. This forecast is done every day and it is
+done nearly for almost 30 days. The forecast is done for tomorrow given
+the sales data up until yesterday.
+
+~Our project data was very detailed, it was consisting of different
+features which are event\_date, product\_content\_id, sold\_count,
+visit\_count, favored\_count, basket\_count, category\_sold,
+category\_brand\_sold, category\_visits, ty\_visits and price. The
+earliest date was from one year before and it was updated each day by
+adding the new day's information. Sold count is the variable that we
+wanted to forecast for tomorrow for each product.
+
+~We prepared the data by removing NA values, removing some columns such
+as event\_date and product\_content\_id, adding some features such as
+is\_after\_corona which describes if the date of the sales is after the
+first case of corona or not and some lagged sold\_count variables such
+as lag\_1, lag\_7, lag\_28 and lag\_365. We then transformed the data
+into xts and grouped the data by 8, which are the products.
+
+~Our main approach to the problem can be summarized as; we first
+analyzed the data and after preparing the data, by using forecasting
+methods, we had come up with the different results. By using different
+evaluation criteria such as fixed origin and rolling origin, and by
+determining the interval of data to train the forecast, we had come up
+with a solution for the project. We have also used information from
+Trendyol's website such as stock or price and we used our insight's such
+as the lifting of quarantine measures (June 1), special days(bayram) and
+weather forecast to gain insight and forecast more accurately.
+
+\hypertarget{related-literature}{%
+\subsection{Related Literature}\label{related-literature}}
+
+The course materials, and the lectures from Datacamp are used
+extensively in developing an approach to the project. Other than that,
+we made literature search.
+
+In the article ``Sales Forecasting for Fashion Retailing Service
+Industry: A Review'', it talks about how the forecasts are strongly
+affected by seasonal factors, fashion trend factor and other tricky
+variables. We concluded from the article that holidays are very
+important in determining the sales quantity. We have also concluded that
+statistical methods can be used for short-term forecasts.
+
+We have also used Rob Hyndman's ``Forecasting: Principles and
+Practice''. In this book, lots of different forecasting methods are
+discussed and we have used most of the methods there and evaluated them
+with each other to be more accurate in sales predictions.
+
+You can find the related articles in reference.
+
+\hypertarget{approach}{%
+\subsection{Approach}\label{approach}}
+
+~In this project, we used different methods which are Naive, Mean, Holt
+Winters Additive, Holt Winters Multiplicative, Exponential Smoothing,
+Auto Arima, TBATS, Linear Regression, Backward Stepwise Regression,
+Forward Stepwise Regression and Neural Network. Linear regression and
+stepwise regression are regression methods which needs external
+regressors whereas other methods can just use the sold\_count data. We
+used sold\_count data in these methods except for regression models.
+
+~Naive method is a very basic method which gives but it is important in
+some cases where it is not possible to predict the direction of change
+in the next day's sales. Example of this could be Tayt sales, sometimes
+stockouts happened and large sales differences were present in
+consecutive days.
+
+~Mean method was useful in some cases where the variance is small. An
+example for this could be Süpürge and Yüz Temizleyici sales. In some
+cases they followed quite similar sales in the last 7 days and by
+shortening the time period, mean could be useful in sales prediction.
+
+~Holt Winters methods were added to detect seasonality and to make more
+accurate predictions. We thought that this approach could detect the
+weekday-weekend differences and could reflect it in the predictions. We
+used frequency of 7 days in our time series data, which makes it a
+weekly data.
+
+~Exponential Smoothing and Auto Arima methods were used with default
+lambda and auto lambda, which uses Box-Cox transformation. We wanted to
+use these methods to diversify our methods with the most basic ones and
+Auto Arima could add any autoregressive feature of the data.
+
+~Linear Regression and Stepwise Regression were used to improve the
+accuracy, but it needed external regressors and because that tomorrow's
+regressors were not available to us, we used today's features.
+
+~We used TBATS to detect any complicated seasonal pattern, which was
+also discussed in the book that we used to develop an approach. You can
+find it at reference section. Neural Network model was also used with
+auto lambda. In the book, this was also discussed and we used it to
+detect any complex non linear relationship in the data.
+
+~Before applying the methods, we have transformed the data to xts. Also,
+we have divided the data into 8 product groups. We have removed then the
+columns event\_date and product\_content\_id. Lastly, we have added
+lagged sales count features which are lag1\_sold\_count,
+lag7\_sold\_count, lag28\_sold\_count and lag365\_sold\_count and we
+changed the price value where it was -1 with the recent price value.
+
+~We have used fixed origin and rolling origin to evaluate our forecast's
+accuracy. In the fixed origin evaluation, we used 2 types: one with the
+80-20 percent train and test data ratio. The other was to use all data
+except the last 2 for train and the last 2 for the test data(today and
+tomorrow). We also thought that this project should be consistent for
+almost 30 days, so we used rolling origin approach. In this approach, we
+used the last 2 data to forecast and it was constant. However we
+increased the train data one by one. We used this method for the 20
+percent of the data. This means we first used 80 percent of the data and
+divided into train and test data. Then increased the train data one by
+one up until it covers the whole data except the last 2 data. This can
+be summarized as increasing input and constant output. By using rolling
+origin, we aimed to achieve a more consistent forecasting approach.
+
+\hypertarget{results}{%
+\subsection{Results}\label{results}}
+
+~In this project, we have forecasted the sales of 8 products for 28
+days. When we look at sum of absolute forecasting errors, in 20 out of
+28 (\textasciitilde\%72) days our forecasts are better than naive
+forecasts. Also, 160 out of 224 (8 products * 28 days) forecasts are
+better than naive forecasts. These paramters shows that
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(data.table)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: data.table
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dt =}\StringTok{ }\KeywordTok{fread}\NormalTok{(}\StringTok{"Error Analysis.csv"}\NormalTok{)}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(dt, }\DataTypeTok{format=}\StringTok{"markdown"}\NormalTok{, }\DataTypeTok{align =} \StringTok{"lcccc"}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"An example table caption."}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lcccc@{}}
+\toprule
+Product & MAE & MAPE & MdAPE & Percent of Forecasts Better Than
+Naive\tabularnewline
+\midrule
+\endhead
+Tayt & 258,04 & 61,33\% & 26,80\% & 75,00\%\tabularnewline
+Şarj Edebilir Diş Fırçası & 28,85 & 90,32\% & 41,88\% &
+53,57\%\tabularnewline
+Mont & 0,00 & & & 100,00\%\tabularnewline
+Islak Mendil \& Havlu & 65,62 & 59,59\% & 26,99\% &
+64,29\%\tabularnewline
+Bikini Üstü & 0,62 & & & 75,00\%\tabularnewline
+Telefon Bluetooth Kulaklık & 149,23 & 48,98\% & 27,55\% &
+71,43\%\tabularnewline
+Süpürge & 12,38 & 52,51\% & 21,36\% & 75,00\%\tabularnewline
+Yüz Temizleyici & 10,92 & 32,62\% & 18,40\% & 57,14\%\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{conclusion-and-future-work}{%
+\subsection{Conclusion and Future
+Work}\label{conclusion-and-future-work}}
+
+
+\end{document}
