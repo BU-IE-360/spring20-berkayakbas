@@ -97,7 +97,7 @@ In order to improve the obtained predictions there exist some simple touches. Fi
 
 ## Code
 
-All of the scripts is available at our git repository which is publicly available. In order to reach our repository please click [here](https://github.com/BU-IE-360/spring20-berkayakbas).
+All of the scripts is available at our git repository which is publicly available. In order to reach our repository please click [here](https://bu-ie-360.github.io/spring20-berkayakbas/Scripts.R).
 
 
 # References
