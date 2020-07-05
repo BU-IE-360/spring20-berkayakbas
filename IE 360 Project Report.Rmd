@@ -102,6 +102,6 @@ All of the scripts is available at our git repository which is publicly availabl
 
 # References
 
-* [Forecasting: Principles and Practice by Rob J Hyndman and George Athanasopoulos, Monash University, Australia](https://otexts.com/fpp2/accuracy.html) 
+* [Hyndman, Rob J, and George Athanasopoulos. Forecasting: Principles and Practice. Monash University, Australia](https://otexts.com/fpp2/) 
 * [Liu, Na, et al. Sales Forecasting for Fashion Retailing Service Industry: A Review, 5 Oct. 2013](http://downloads.hindawi.com/journals/mpe/2013/738675.pdf)
 
